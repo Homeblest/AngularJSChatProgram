@@ -7,7 +7,25 @@ var stylish = require('jshint-stylish');
 
 gulp.task('js', function() {
     return gulp.src('src/js/*.js')
-        .pipe(jshint())
+        .pipe(jshint({
+            curly: true,
+            immed: true,
+            newcap: true,
+            noarg: true,
+            sub: true,
+            boss: true,
+            eqnull: true,
+            node: true,
+            undef: true,
+            globals: {
+                _: false,
+                jQuery: false,
+                angular: false,
+                moment: false,
+                console: false,
+                $: false
+            }
+        }))
         .pipe(jshint.reporter(stylish))
         .pipe(jshint.reporter('fail'))
         .pipe(uglify())

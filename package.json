@@ -1,33 +1,13 @@
 {
-    "name": "chatserver",
-    "description": "WEPO Chat client assignment",
-    "version": "0.0.1",
-    "dependencies": {
-        "express": "3.1.0",
-        "socket.io": "0.9.13"
-    },
-    "devDependencies": {
-        "jshint-stylish": "^1.0.0"
-    },
-    "jshintConfig": {
-      "options": {
-        "curly": true,
-        "immed": true,
-        "newcap": true,
-        "noarg": true,
-        "sub": true,
-        "boss": true,
-        "eqnull": true,
-        "node": true,
-        "undef": true,
-        "globals": {
-          "_": false,
-          "jQuery":  false,
-          "angular": false,
-          "moment":  false,
-          "console": false,
-          "$": false
-        }
-      }
-    }
+  "name": "chatserver",
+  "description": "WEPO Chat client assignment",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "3.1.0",
+    "socket.io": "0.9.13"
+  },
+  "devDependencies": {
+    "gulp-uglify": "^1.1.0",
+    "jshint-stylish": "^1.0.0"
+  }
 }
