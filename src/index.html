@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="Chapp">
 	<head>
 		<!-- Bootstrap CDN -->
-		<link rel="stylesheet" href="../bower_components/bootswatch-dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.2/superhero/bootstrap.min.css">
+		<!--
+			<link rel="stylesheet" href="../bower_components/bootswatch-dist/css/bootstrap.min.css">
+		-->
 		<link rel="stylesheet" href="css/style.css">
 		<!-- Bootstrap js CDN, Angular and custom js file -->
+		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 		<script src="../bower_components/bootswatch-dist/js/bootstrap.min.js"></script>
 		<script src="../bower_components/angular/angular.js"></script>
 		<script src="js/firstController.js"></script>
@@ -26,9 +30,10 @@
 							<form accept-charset="UTF-8" role="form">
 								<fieldset>
 									<div class="form-group">
-										<input class="form-control" placeholder="Username" name="username" type="text">
+										<input class="form-control" placeholder="Username" name="username" type="text" ng-model="name">
 									</div>
 									<input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
+									<h3>Your name is now: {{name}}</h3>
 								</fieldset>
 							</form>
 						</div>
