@@ -1,0 +1,6 @@
+<h3>Hi {{currentUser}} - Active chat rooms</h3>
+<div class="well">
+	<ul ng-repeat="room in rooms">
+		<li><a href="#/room/{{currentUser}}/{{room}}">{{room}}</a></li>
+	</ul>
+</div>
