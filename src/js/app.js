@@ -39,6 +39,6 @@ RuChat.controller('loginController', function($scope, $location, $rootScope, $ro
 
 RuChat.controller('roomsController', function ($scope, $location, $rootScope, $routeParams, socket) {
 	// TODO: Query chat server for active rooms
-	$scope.rooms = ['Room 1','Room 2','Room 3','Room 4','Room 5'];
+	$scope.rooms = ['General Chat','Roleplay','Help','History','JoinOrDie'];
 	$scope.currentUser = $routeParams.user;
 });

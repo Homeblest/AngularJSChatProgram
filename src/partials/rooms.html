@@ -1,6 +1,17 @@
-<h3>Hi {{currentUser}} - Active chat rooms</h3>
-<div class="well">
-	<ul ng-repeat="room in rooms">
-		<li><a href="#/room/{{currentUser}}/{{room}}">{{room}}</a></li>
-	</ul>
-</div>
+<h1>Hi {{currentUser}}!</h1>
+<h2>These are the active chat rooms!</h2>
+
+<table class="table table-striped table-hover table-bordered ">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="room in rooms">
+    	<td><h4>{{room}}</h4></td>
+    	<td><a href="#/room/{{currentUser}}/{{room}}" class="btn btn-success">Join</a></td>
+    </tr>
+  </tbody>
+</table> 
