@@ -11,6 +11,10 @@ RuChat.config(
                 templateUrl: 'partials/rooms.html',
                 controller: 'roomsController'
             })
+            .when('/room/:user/:room/', {
+                templateUrl: 'partials/room.html',
+                controller: 'roomController'
+            })
             .otherwise({
                 redirectTo: '/login'
             });
@@ -37,8 +41,26 @@ RuChat.controller('loginController', function($scope, $location, $rootScope, $ro
     };
 });
 
-RuChat.controller('roomsController', function ($scope, $location, $rootScope, $routeParams, socket) {
-	// TODO: Query chat server for active rooms
-	$scope.rooms = ['General Chat','Roleplay','Help','History','JoinOrDie'];
-	$scope.currentUser = $routeParams.user;
+RuChat.controller('roomsController', function($scope, $location, $rootScope, $routeParams, socket) {
+    // TODO: Query chat server for active rooms
+    $scope.rooms = ['General Chat', 'Roleplay', 'Help', 'History', 'JoinOrDie'];
+    $scope.currentUser = $routeParams.user;
+});
+
+RuChat.controller('roomController', function($scope, $location, $rootScope, $routeParams, socket) {
+    $scope.currentRoom = $routeParams.room;
+    $scope.currentUser = $routeParams.user;
+    $scope.currentUsers = [];
+    $scope.errorMessage = ''
+
+    socket.on('updateusers', function(roomName, users, ops) {
+        // TODO: Check if the roomName equals the current room !
+        $scope.currentUsers = users;
+    });
+
+    socket.emit('joinroom', $scope.currentRoom, function(success, reason) {
+        if (!success) {
+            $scope.errorMessage = reason;
+        }
+    });
 });

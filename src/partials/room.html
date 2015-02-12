@@ -1,0 +1,16 @@
+<div class="alert alert-danger" ng-cloak ng-show="errorMessage != ''">
+	{{errorMessage}}
+</div>
+
+<h3>Hi {{currentUser}} - Room {{currentRoom}}</h3>
+<div class="col-md-9">
+	TODO - display chat
+</div>
+<div class="col-md-3">
+	<h4>Users in this room</h4>
+	<div class="well">	
+		<ul>
+			<li ng-repeat="user in currentUsers">{{user}}</li>
+		</ul>
+	</div>
+</div>
