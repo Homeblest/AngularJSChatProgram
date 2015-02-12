@@ -6,7 +6,7 @@ var gulp = require('gulp'),
 var stylish = require('jshint-stylish');
 
 gulp.task('js', function() {
-    return gulp.src('src/js/*.js')
+    return gulp.src(['src/js/*.js', '!src/js/socket.io.min.js'])
         .pipe(jshint({
             curly: true,
             immed: true,

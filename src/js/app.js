@@ -51,7 +51,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     $scope.currentRoom = $routeParams.room;
     $scope.currentUser = $routeParams.user;
     $scope.currentUsers = [];
-    $scope.errorMessage = ''
+    $scope.errorMessage = '';
 
     socket.on('updateusers', function(roomName, users, ops) {
         // TODO: Check if the roomName equals the current room !
