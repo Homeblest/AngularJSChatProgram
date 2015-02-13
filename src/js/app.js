@@ -30,7 +30,8 @@ RuChat.controller('loginController', function($scope, $location, $rootScope, $ro
         if ($scope.nickname === '') {
             $scope.errorMessage = 'Please choose a username before continuing!';
         } else {
-            socket.emit('adduser', $scope.nickname, function(available) {
+            var nick = $scope.nickname;
+            socket.emit('adduser', nick, function(available) {
                 if (available) {
                     $location.path('/rooms/' + $scope.nickname);
                 } else {
@@ -42,12 +43,26 @@ RuChat.controller('loginController', function($scope, $location, $rootScope, $ro
 });
 
 RuChat.controller('roomsController', function($scope, $location, $rootScope, $routeParams, socket) {
-    // TODO: Query chat server for active rooms
-    $scope.rooms = ['General Chat', 'Roleplay', 'Help', 'History', 'JoinOrDie'];
+
     $scope.currentUser = $routeParams.user;
+    $scope.allUsers = [];
+
+    socket.emit('rooms');
+
+    socket.on('roomlist', function(list) {
+        $scope.rooms = Object.keys(list);
+    });
+
+    socket.emit('users');
+
+    socket.on('userlist', function(userlist) {
+        for(var i = 0; i < userlist.length; ++i){
+            $scope.allUsers[i] = userlist[i];
+        }
+    });
 
     $scope.createRoom = function() {
-        if($scope.roomName === '') {
+        if ($scope.roomName === '') {
             $scope.errorMessage = 'Please choose a room name before continuing!';
         } else {
             var joinObj = {
@@ -55,8 +70,8 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
                 pass: $scope.roomPass
             };
             socket.emit('joinroom', joinObj, function(available) {
-                if(available) {
-                    $location.path('/room/' + $scope.currentUser + $scope.roomName);
+                if (available) {
+                    $location.path('/room/' + $scope.currentUser + '/' + $scope.roomName);
                 } else {
                     $scope.errorMessage = "Some room error occured!";
                 }
