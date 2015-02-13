@@ -1,4 +1,27 @@
-
 body {
 	text-align: center;
+}
+
+#chatWindow {
+	background-color: white;
+	color: black;
+	margin: auto;
+	overflow: auto;
+	width: 500px;
+	height: 500px;
+}
+
+#messages { list-style-type: none; margin: 0; padding: 0; }
+#messages li { padding: 5px 10px; }
+#messages li:nth-child(odd) { background: #eee; }
+form {
+	width: 500px;
+	margin: auto;
+	margin-top: 10px;
+}
+form input {
+	border: 0;
+	padding: 9px;
+	vertical-align: middle;
+	width: 86%;
 }

@@ -56,13 +56,13 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     socket.emit('users');
 
     socket.on('userlist', function(userlist) {
-        for(var i = 0; i < userlist.length; ++i){
+        for (var i = 0; i < userlist.length; ++i) {
             $scope.allUsers[i] = userlist[i];
         }
     });
 
     $scope.createRoom = function() {
-        if ($scope.roomName === '') {
+        if ($scope.roomName === undefined) {
             $scope.errorMessage = 'Please choose a room name before continuing!';
         } else {
             var joinObj = {
@@ -93,6 +93,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
 
     socket.emit('joinroom', $scope.currentRoom, function(success, reason) {
         if (!success) {
+            console.log("shit");
             $scope.errorMessage = reason;
         }
     });

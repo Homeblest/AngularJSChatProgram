@@ -2,13 +2,11 @@
 	{{errorMessage}}
 </div>
 <h3>Hi {{currentUser}} - Room {{currentRoom}}</h3>
-<div class="panel panel-default">
-	<div class="panel-heading">
-		<p>Chat goes below this</p>
-	</div>
-	<div class="panel-body">
-		<p>Message1</p>
-		<p>message2</p>
-	</div>
-</div>
 
+<div id="chatWindow">
+	<ul id="messages"></ul>
+</div>
+<form action="" class="form-inline">
+      <input id="m" autocomplete="off" />
+      	<button class="btn btn-primary">Send</button>
+</form>

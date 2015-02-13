@@ -10,7 +10,7 @@
   <tbody>
     <tr ng-repeat="room in rooms">
       <td><h4>{{room}}</h4></td>
-      <td><a href="#/room/{{currentUser}}/{{room}}" class="btn btn-success">Join</a></td>
+      <td><a href="#/room/{{currentUser}}/{{room}}" class="btn btn-success" ng-click="joinRoom()">Join</a></td>
     </tr>
   </tbody>
 </table>
@@ -32,6 +32,12 @@
     </form>
   </div>
 </div>
-<ul ng-repeat="user in allUsers">
-  <li>{{user}}</li>
-</ul>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4>Connected users:</h4>
+  </div>
+  <div class="panel-body" ng-repeat="user in allUsers">
+    <span>{{user}}</span>
+  </div>
+</div>
