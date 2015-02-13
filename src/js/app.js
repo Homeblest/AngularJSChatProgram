@@ -34,7 +34,7 @@ RuChat.controller('loginController', function($scope, $location, $rootScope, $ro
                 if (available) {
                     $location.path('/rooms/' + $scope.nickname);
                 } else {
-                    $scope.errorMessage = 'This nick-name is already taken!';
+                    $scope.errorMessage = 'This username is already taken!';
                 }
             });
         }
@@ -45,6 +45,24 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     // TODO: Query chat server for active rooms
     $scope.rooms = ['General Chat', 'Roleplay', 'Help', 'History', 'JoinOrDie'];
     $scope.currentUser = $routeParams.user;
+
+    $scope.createRoom = function() {
+        if($scope.roomName === '') {
+            $scope.errorMessage = 'Please choose a room name before continuing!';
+        } else {
+            var joinObj = {
+                room: $scope.roomName,
+                pass: $scope.roomPass
+            };
+            socket.emit('joinroom', joinObj, function(available) {
+                if(available) {
+                    $location.path('/room/' + $scope.currentUser + $scope.roomName);
+                } else {
+                    $scope.errorMessage = "Some room error occured!";
+                }
+            });
+        }
+    };
 });
 
 RuChat.controller('roomController', function($scope, $location, $rootScope, $routeParams, socket) {
