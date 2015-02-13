@@ -85,15 +85,28 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     $scope.currentUser = $routeParams.user;
     $scope.currentUsers = [];
     $scope.errorMessage = '';
+    $scope.allMessages = [];
 
-    socket.on('updateusers', function(roomName, users, ops) {
-        // TODO: Check if the roomName equals the current room !
-        $scope.currentUsers = users;
+    $scope.sendMsg = function() {
+        var data = {
+            roomName: $scope.currentRoom,
+            msg: $scope.message
+        };
+        socket.emit('sendmsg', data);
+    };
+
+    socket.on('updatechat', function (roomName, history){
+        console.log("updatechat event fired");
+        for(var i = 0; i < history.length; i++){
+            $scope.allMessages[i] = history[i];
+        }
+        for(var i = 0; i < $scope.allMessages.length; i++){
+            console.log($scope.allMessages[i]);
+        }
     });
 
-    socket.emit('joinroom', $scope.currentRoom, function(success, reason) {
+    socket.emit('joinroom', $scope.currentRoom, function (success, reason) {
         if (!success) {
-            console.log("shit");
             $scope.errorMessage = reason;
         }
     });

@@ -10,18 +10,22 @@ body {
 	width: 500px;
 	height: 500px;
 }
-
-#messages { list-style-type: none; margin: 0; padding: 0; }
-#messages li { padding: 5px 10px; }
-#messages li:nth-child(odd) { background: #eee; }
 #chatForm {
 	width: 500px;
 	margin: auto;
 	margin-top: 10px;
 }
-#chatForm input {
+#chatInput {
 	border: 0;
 	padding: 9px;
 	vertical-align: middle;
+	width: 100%;
+}
+#chatInputDiv {
 	width: 86%;
+}
+.userMsg {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
 }

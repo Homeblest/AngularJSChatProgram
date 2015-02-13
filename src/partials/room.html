@@ -1,12 +1,20 @@
 <div class="alert alert-danger" ng-cloak ng-show="errorMessage != ''">
 	{{errorMessage}}
 </div>
+
 <h3>Hi {{currentUser}} - Room {{currentRoom}}</h3>
 
 <div id="chatWindow">
-	<ul id="messages"></ul>
+	<ul ng-repeat="msg in allMessages">
+		<li class="userMsg">{{msg.message}}</li>
+	</ul>
 </div>
-<form action="" class="form-inline" id="chatForm">
-      <input id="m" autocomplete="off" />
-      	<button class="btn btn-primary">Send</button>
+
+<form accept-charset="UTF-8" role="form" class="form-inline" id="chatForm">
+	<fieldset>
+		<div class="form-group" id="chatInputDiv">
+			<input type="text" id="chatInput" autocomplete="off" ng-model="message">
+		</div>
+		<input class="btn btn-primary" type="submit" value="Send" ng-click="sendMsg()"></input>
+	</fieldset>
 </form>
