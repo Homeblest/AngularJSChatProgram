@@ -8,11 +8,11 @@ body {
 	color: black;
 	margin: auto;
 	overflow: auto;
-	width: 500px;
+	width: 1000px;
 	height: 500px;
 }
 #chatForm {
-	width: 500px;
+	width: 95%;
 	margin: auto;
 	margin-top: 10px;
 }
@@ -34,6 +34,7 @@ body {
 	list-style-type: none; 
 	margin: 0; 
 	padding: 0;
+
 }
 .msgTime {
 	float:right;
