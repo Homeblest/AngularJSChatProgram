@@ -6,7 +6,10 @@
 
 <div id="chatWindow">
 	<ul ng-repeat="msg in allMessages">
-		<li class="userMsg">{{msg.message}}</li>
+		<li class="userMsg">
+			{{msg.nick}}: {{msg.message}}
+			<span class="msgTime">{{msg.timestamp | date:'HH:mm'}}</span>
+		</li>
 	</ul>
 </div>
 

@@ -96,12 +96,8 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     };
 
     socket.on('updatechat', function (roomName, history){
-        console.log("updatechat event fired");
         for(var i = 0; i < history.length; i++){
             $scope.allMessages[i] = history[i];
-        }
-        for(var i = 0; i < $scope.allMessages.length; i++){
-            console.log($scope.allMessages[i]);
         }
     });
 

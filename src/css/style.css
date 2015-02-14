@@ -3,6 +3,7 @@ body {
 }
 
 #chatWindow {
+	text-align: left;
 	background-color: white;
 	color: black;
 	margin: auto;
@@ -25,7 +26,15 @@ body {
 	width: 86%;
 }
 .userMsg {
-	list-style-type: none;
-	margin: 0;
+	padding: 5px 10px;
+}
+.userMsg:nth-child(odd) { background: #eee; }
+
+#chatWindow ul {
+	list-style-type: none; 
+	margin: 0; 
 	padding: 0;
+}
+.msgTime {
+	float:right;
 }
