@@ -92,6 +92,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     });
 
     socket.on('updateusers', function(room, users, ops) {
+        // This fires the rooms event which fires the roomlist event.
         socket.emit('rooms');
     });
 

@@ -19,13 +19,12 @@
 	<div class="col-md-10">
 		<div id="chatWindow">
 			<ul>
-				<li>{{roomTopic}}</li>
+				<li>Topic: {{roomTopic}}</li>
 			</ul>
 			<ul ng-repeat="msg in allMessages">
 				<li class="userMsg">
 					{{msg.nick}}:  {{msg.message}}
 					<span class="msgTime">{{msg.timestamp | date:'HH:mm'}}</span>
-					<span ng-cloak ng-show="serverMessage != ''">{{serverMessage}}</span>
 				</li>
 			</ul>
 		</div>
