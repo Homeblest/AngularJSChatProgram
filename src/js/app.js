@@ -47,8 +47,9 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     $scope.currentUser = $routeParams.user;
     $scope.allUsers = [];
 
+    // Get the list of all rooms
     socket.emit('rooms');
-
+    // respond to emitted event from server
     socket.on('roomlist', function(list) {
         $scope.rooms = Object.keys(list);
     });
@@ -61,22 +62,12 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     });
 
+    $scope.$watch('roomName', function(name){
+        console.log(name);
+    });
+
     $scope.createRoom = function() {
-        if ($scope.roomName === undefined) {
-            $scope.errorMessage = 'Please choose a room name before continuing!';
-        } else {
-            var joinObj = {
-                room: $scope.roomName,
-                pass: $scope.roomPass
-            };
-            socket.emit('joinroom', joinObj, function(available) {
-                if (available) {
-                    $location.path('/room/' + $scope.currentUser + '/' + $scope.roomName);
-                } else {
-                    $scope.errorMessage = "Some room error occured!";
-                }
-            });
-        }
+        $location.path('/room/' + $scope.currentUser + '/' + $scope.roomName);
     };
 });
 
@@ -87,23 +78,42 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     $scope.errorMessage = '';
     $scope.allMessages = [];
 
+    var roomObj = {
+        room: $scope.currentRoom
+    }
+    socket.emit('joinroom', roomObj, function(success, reason) {
+        console.log(roomObj.room + " was created");
+        if (!success) {
+            $scope.errorMessage = reason;
+        }
+    });
+
+    $scope.leaveRoom = function() {
+        $location.path('/rooms/' + $scope.currentUser);
+    };
+
+    socket.emit('rooms');
+
+    socket.on('roomlist', function(list) {
+        $scope.currentUsers = list[$scope.currentRoom].users;
+        console.log(Object.keys(list[$scope.currentRoom].users));
+        for(var i = 0; i < $scope.currentUsers.length; ++i){
+            console.log($scope.currentUsers[i]);
+        }
+    });
+
     $scope.sendMsg = function() {
         var data = {
             roomName: $scope.currentRoom,
             msg: $scope.message
         };
         socket.emit('sendmsg', data);
+        $scope.message = "";
     };
 
-    socket.on('updatechat', function (roomName, history){
-        for(var i = 0; i < history.length; i++){
+    socket.on('updatechat', function(roomName, history) {
+        for (var i = 0; i < history.length; i++) {
             $scope.allMessages[i] = history[i];
-        }
-    });
-
-    socket.emit('joinroom', $scope.currentRoom, function (success, reason) {
-        if (!success) {
-            $scope.errorMessage = reason;
         }
     });
 });

@@ -1,23 +1,40 @@
-<div class="alert alert-danger" ng-cloak ng-show="errorMessage != ''">
-	{{errorMessage}}
+<div class="row">
+	<div class="col-md-1">
+		<button class="btn btn-primary leaveBtn" ng-click="leaveRoom()">
+			&lt;-- Leave
+		</button>
+	</div>
+	<div class="col-md-4 col-md-offset-3">
+		<h3>Hi {{currentUser}} - You are in room {{currentRoom}}</h3>
+	</div>
 </div>
-
-<h3>Hi {{currentUser}} - Room {{currentRoom}}</h3>
-
-<div id="chatWindow">
-	<ul ng-repeat="msg in allMessages">
-		<li class="userMsg">
-			{{msg.nick}}: {{msg.message}}
-			<span class="msgTime">{{msg.timestamp | date:'HH:mm'}}</span>
-		</li>
-	</ul>
-</div>
-
-<form accept-charset="UTF-8" role="form" class="form-inline" id="chatForm" name="myForm">
-	<fieldset>
-		<div class="form-group" id="chatInputDiv">
-			<input type="text" id="chatInput" autocomplete="off" ng-model="message">
+<div class="row chatRow">
+	<div class="col-md-1">
+		<h4>Users:</h4>
+		<ul class="list-group" ng-repeat="user in roomUsers">
+			<li class="list-group-item">{{user}}</li>
+		</ul>
+	</div>
+	<div class="col-md-10">
+		<div id="chatWindow">
+			<ul ng-repeat="msg in allMessages">
+				<li class="userMsg">
+					{{msg.nick}}:  {{msg.message}}
+					<span class="msgTime">{{msg.timestamp | date:'HH:mm'}}</span>
+				</li>
+			</ul>
 		</div>
-		<input class="btn btn-primary" type="submit" value="Send" ng-click="sendMsg()"></input>
-	</fieldset>
-</form>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<form accept-charset="UTF-8" role="form" class="form-inline" id="chatForm" name="myForm">
+			<fieldset>
+				<div class="form-group" id="divFormGroup">
+					<input type="text" id="chatInput" autocomplete="off" ng-model="message" autofocus>
+				</div>
+				<input class="btn btn-primary" type="submit" value="Send" ng-click="sendMsg()"></input>
+			</fieldset>
+		</form>
+	</div>
+</div>

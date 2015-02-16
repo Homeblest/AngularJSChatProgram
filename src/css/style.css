@@ -1,20 +1,25 @@
 body {
 	text-align: center;
 }
-
+.chatRow {
+	margin-top: 2%;
+}
+.leaveBtn {
+	margin-top: 16px;
+}
 #chatWindow {
 	text-align: left;
 	background-color: white;
 	color: black;
-	margin: auto;
 	overflow: auto;
-	width: 1000px;
 	height: 500px;
 }
 #chatForm {
-	width: 95%;
-	margin: auto;
+	width: 100%;
 	margin-top: 10px;
+}
+#divFormGroup {
+	width: 76.8%;
 }
 #chatInput {
 	border: 0;
@@ -22,13 +27,13 @@ body {
 	vertical-align: middle;
 	width: 100%;
 }
-#chatInputDiv {
-	width: 86%;
-}
 .userMsg {
 	padding: 5px 10px;
 }
-.userMsg:nth-child(odd) { background: #eee; }
+.userMsg:nth-child(odd) { 
+	background: #eee;
+	border: 1px solid black;
+}
 
 #chatWindow ul {
 	list-style-type: none; 
