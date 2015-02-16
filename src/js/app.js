@@ -85,14 +85,13 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         room: $scope.currentRoom
     }
     socket.emit('joinroom', roomObj, function(success, reason) {
-        console.log(roomObj.room + " was created");
         if (!success) {
             $scope.errorMessage = reason;
         }
     });
 
+    // fires when leave button is clicked
     $scope.leaveRoom = function() {
-        console.log("leave fired");
         socket.emit('partroom', $scope.currentRoom);
         $location.path('/rooms/' + $scope.currentUser);
     };
@@ -103,6 +102,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     socket.on('roomlist', function(list) {
         $scope.currentUsers = list[$scope.currentRoom].users;
         $scope.allMessages = list[$scope.currentRoom].messageHistory;
+        $scope.roomTopic = list[$scope.currentRoom].topic;
     });
 
     $scope.sendMsg = function() {

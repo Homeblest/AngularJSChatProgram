@@ -18,6 +18,9 @@
 	</div>
 	<div class="col-md-10">
 		<div id="chatWindow">
+			<ul>
+				<li>{{roomTopic}}</li>
+			</ul>
 			<ul ng-repeat="msg in allMessages">
 				<li class="userMsg">
 					{{msg.nick}}:  {{msg.message}}
