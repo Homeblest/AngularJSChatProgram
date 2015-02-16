@@ -62,11 +62,8 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     });
 
-    $scope.$watch('roomName', function(name) {
-        console.log(name);
-    });
-
     $scope.createRoom = function() {
+        socket.emit('rooms');
         $location.path('/room/' + $scope.currentUser + '/' + $scope.roomName);
     };
 
@@ -84,7 +81,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
 
     var roomObj = {
         room: $scope.currentRoom
-    }
+    };
     socket.emit('joinroom', roomObj, function(success, reason) {
         if (!success) {
             $scope.errorMessage = reason;
@@ -102,6 +99,10 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
             $scope.serverMessage = username + " just joined " + room;
         } else if(msg === "part") {
             $scope.serverMessage = username + " just left " + room;
+        }
+        $scope.allMessages.push($scope.serverMessage);
+        for( var i = 0; i < $scope.allMessages.length; i++){
+            console.log($scope.allMessages[i]);
         }
     });
 
