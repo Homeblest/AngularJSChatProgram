@@ -62,7 +62,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     });
 
-    $scope.$watch('roomName', function(name){
+    $scope.$watch('roomName', function(name) {
         console.log(name);
     });
 
@@ -88,6 +88,10 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         if (!success) {
             $scope.errorMessage = reason;
         }
+    });
+
+    socket.on('updateusers', function(room, users, ops) {
+        socket.emit('rooms');
     });
 
     // fires when leave button is clicked
