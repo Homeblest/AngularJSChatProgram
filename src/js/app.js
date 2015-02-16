@@ -69,14 +69,17 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     $scope.createRoom = function() {
         $location.path('/room/' + $scope.currentUser + '/' + $scope.roomName);
     };
+
 });
 
 RuChat.controller('roomController', function($scope, $location, $rootScope, $routeParams, socket) {
+
     $scope.currentRoom = $routeParams.room;
     $scope.currentUser = $routeParams.user;
     $scope.currentUsers = [];
     $scope.errorMessage = '';
     $scope.allMessages = [];
+    $scope.allRoomUsers = [];
 
     var roomObj = {
         room: $scope.currentRoom
@@ -91,6 +94,14 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     $scope.leaveRoom = function() {
         $location.path('/rooms/' + $scope.currentUser);
     };
+
+    socket.emit('users');
+
+    socket.on('userlist', function(userlist) {
+        for (var i = 0; i < userlist.length; ++i) {
+            $scope.allRoomUsers[i] = userlist[i];
+        }
+    });
 
     socket.emit('rooms');
 
