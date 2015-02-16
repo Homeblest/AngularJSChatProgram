@@ -25,6 +25,7 @@
 				<li class="userMsg">
 					{{msg.nick}}:  {{msg.message}}
 					<span class="msgTime">{{msg.timestamp | date:'HH:mm'}}</span>
+					<span ng-cloak ng-show="serverMessage != ''">{{serverMessage}}</span>
 				</li>
 			</ul>
 		</div>

@@ -80,6 +80,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     $scope.errorMessage = '';
     $scope.allMessages = [];
     $scope.allRoomUsers = [];
+    $scope.serverMessage = '';
 
     var roomObj = {
         room: $scope.currentRoom
@@ -92,6 +93,14 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
 
     socket.on('updateusers', function(room, users, ops) {
         socket.emit('rooms');
+    });
+
+    socket.on('servermessage', function(msg, room, username){
+        if(msg === "join") {
+            $scope.serverMessage = username + " just joined " + room;
+        } else if(msg === "part") {
+            $scope.serverMessage = username + " just left " + room;
+        }
     });
 
     // fires when leave button is clicked
