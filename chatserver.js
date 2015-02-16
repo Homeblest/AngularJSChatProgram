@@ -52,6 +52,7 @@ io.sockets.on('connection', function (socket) {
 			}
 			//Keep track of the room in the user object.
 			users[socket.username].channels[room] = room;
+			rooms[room].users[socket.username] = socket.username;
 			//Send the room information to the client.
 			fn(true);
 			io.sockets.emit('updateusers', room, rooms[room].users, rooms[room].ops);

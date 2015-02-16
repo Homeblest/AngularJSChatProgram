@@ -62,10 +62,6 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     });
 
-    $scope.$watch('roomName', function(name) {
-        console.log(name);
-    });
-
     $scope.createRoom = function() {
         $location.path('/room/' + $scope.currentUser + '/' + $scope.roomName);
     };
