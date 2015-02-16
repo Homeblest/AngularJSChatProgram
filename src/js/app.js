@@ -102,6 +102,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     socket.emit('rooms');
     socket.on('roomlist', function(list) {
         $scope.currentUsers = list[$scope.currentRoom].users;
+        $scope.allMessages = list[$scope.currentRoom].messageHistory;
     });
 
     $scope.sendMsg = function() {
