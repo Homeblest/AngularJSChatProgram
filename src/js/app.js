@@ -95,22 +95,10 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         $location.path('/rooms/' + $scope.currentUser);
     };
 
-    socket.emit('users');
-
-    socket.on('userlist', function(userlist) {
-        for (var i = 0; i < userlist.length; ++i) {
-            $scope.allRoomUsers[i] = userlist[i];
-        }
-    });
-
     socket.emit('rooms');
 
     socket.on('roomlist', function(list) {
         $scope.currentUsers = list[$scope.currentRoom].users;
-        console.log(Object.keys(list[$scope.currentRoom].users));
-        for(var i = 0; i < $scope.currentUsers.length; ++i){
-            console.log($scope.currentUsers[i]);
-        }
     });
 
     $scope.sendMsg = function() {
