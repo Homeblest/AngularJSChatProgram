@@ -92,11 +92,14 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     });
 
     $scope.leaveRoom = function() {
+        console.log("leave fired");
+        socket.emit('partroom', $scope.currentRoom);
         $location.path('/rooms/' + $scope.currentUser);
     };
 
+    // Get the user roster for the room
+    // to display all connected users in that room
     socket.emit('rooms');
-
     socket.on('roomlist', function(list) {
         $scope.currentUsers = list[$scope.currentRoom].users;
     });
