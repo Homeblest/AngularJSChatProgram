@@ -78,6 +78,8 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     $scope.allMessages = [];
     $scope.allRoomUsers = [];
     $scope.serverMessage = '';
+    $scope.roomOps = [];
+    $scope.roomObject = {};
 
     var roomObj = {
         room: $scope.currentRoom
@@ -94,18 +96,6 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         socket.emit('rooms');
     });
 
-    socket.on('servermessage', function(msg, room, username){
-        if(msg === "join") {
-            $scope.serverMessage = username + " just joined " + room;
-        } else if(msg === "part") {
-            $scope.serverMessage = username + " just left " + room;
-        }
-        $scope.allMessages.push($scope.serverMessage);
-        for( var i = 0; i < $scope.allMessages.length; i++){
-            console.log($scope.allMessages[i]);
-        }
-    });
-
     // fires when leave button is clicked
     $scope.leaveRoom = function() {
         sendLeaveMsg();
@@ -120,7 +110,17 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         $scope.currentUsers = list[$scope.currentRoom].users;
         $scope.allMessages = list[$scope.currentRoom].messageHistory;
         $scope.roomTopic = list[$scope.currentRoom].topic;
+        $scope.roomOps = Object.keys(list[$scope.currentRoom].ops);
     });
+
+    $scope.isOp = function(name) {
+        for (var i = 0; i < $scope.roomOps.length; ++i) {
+            if(name === $scope.roomOps[i]){
+                console.log(name + " is op.");
+                return true;
+            }
+        }
+    }
 
     $scope.sendMsg = function() {
         var data = {

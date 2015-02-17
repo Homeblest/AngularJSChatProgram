@@ -11,13 +11,7 @@
 </div>
 
 <div class="row chatRow">
-	<div class="col-md-1">
-		<h4>Users:</h4>
-		<ul class="list-group" ng-repeat="user in currentUsers">
-			<li class="list-group-item">{{user}}</li>
-		</ul>
-	</div>
-	
+
 	<div class="col-md-10">
 		<div id="chatWindow">
 			<ul>
@@ -31,6 +25,20 @@
 			</ul>
 		</div>
 	</div>
+
+	<div class="col-md-2 roomUserList">
+		<h4>Users:</h4>
+		<ul ng-repeat="user in currentUsers">
+			<li ng-if="isOp(user)">
+				<span class="glyphicon glyphicon-user"></span>
+				{{user}} (OP)
+			</li>
+			<li ng-if="!isOp(user)">
+				<span class="glyphicon glyphicon-user"></span>
+				{{user}}
+			</li>
+		</ul>
+	</div>
 </div>
 
 <div class="row">
@@ -40,7 +48,7 @@
 				<div class="form-group" id="divFormGroup">
 					<input type="text" id="chatInput" autocomplete="off" ng-model="message" autofocus>
 				</div>
-				<input class="btn btn-primary" type="submit" value="Send" ng-click="sendMsg()"></input>
+				<input class="btn btn-primary chatButton" type="submit" value="Send" ng-click="sendMsg()"></input>
 			</fieldset>
 		</form>
 	</div>

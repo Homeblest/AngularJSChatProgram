@@ -52,6 +52,7 @@ io.sockets.on('connection', function (socket) {
 			}
 			//Keep track of the room in the user object.
 			users[socket.username].channels[room] = room;
+			// Insert the user into the room.
 			rooms[room].users[socket.username] = socket.username;
 			//Send the room information to the client.
 			fn(true);
@@ -86,6 +87,10 @@ io.sockets.on('connection', function (socket) {
 				fn(true);
 				//Add user to room.
 				rooms[room].addUser(socket.username);
+				// If no operator is present, make this user an operator
+				if(Object.keys(rooms[room].ops).length === 0){
+					rooms[room].ops[socket.username] = socket.username;
+				}
 				//Keep track of the room in the user object.
 				users[socket.username].channels[room] = room;
 				//Send the room information to the client.

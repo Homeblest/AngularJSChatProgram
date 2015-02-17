@@ -1,6 +1,10 @@
 body {
 	text-align: center;
 }
+.roomUserList {
+	float: right;
+	overflow: auto;
+}
 .chatRow {
 	margin-top: 2%;
 }
@@ -18,8 +22,12 @@ body {
 	width: 100%;
 	margin-top: 10px;
 }
+.chatButton {
+	float: left;
+}
 #divFormGroup {
 	width: 76.8%;
+	float: left;
 }
 #chatInput {
 	border: 0;
