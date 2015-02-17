@@ -4,6 +4,10 @@ body {
 .roomUserList {
 	float: right;
 	overflow: auto;
+	height: 500px;
+}
+.glyphicon-user {
+	float: left;
 }
 .chatRow {
 	margin-top: 2%;

@@ -27,15 +27,11 @@
 	</div>
 
 	<div class="col-md-2 roomUserList">
-		<h4>Users:</h4>
-		<ul ng-repeat="user in currentUsers">
-			<li ng-if="isOp(user)">
+		<input type="text" ng-model="searchUser"></input>
+		<ul class="list-group">
+			<li class ="list-group-item" ng-repeat="user in currentUsers | filter:searchUser">
 				<span class="glyphicon glyphicon-user"></span>
-				{{user}} (OP)
-			</li>
-			<li ng-if="!isOp(user)">
-				<span class="glyphicon glyphicon-user"></span>
-				{{user}}
+				{{user}} <span ng-if="isOp(user)">(OP)</span>
 			</li>
 		</ul>
 	</div>
