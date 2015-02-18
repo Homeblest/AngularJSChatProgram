@@ -1,0 +1,2 @@
+- When user closes tab/window, implement "user left room"
+- Private chat (i vinnslu -Arni)
