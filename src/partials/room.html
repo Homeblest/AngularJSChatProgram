@@ -12,7 +12,7 @@
 <div class="row chatRow">
 	
 	<div class="col-md-10">
-		<div id="chatWindow">
+		<div id="chatWindow" scroll-glue>
 			<ul>
 				<li>Topic: {{roomTopic}}</li>
 			</ul>
@@ -26,7 +26,7 @@
 	</div>
 	
 	<div class="col-md-2 roomUserList">
-		<div class="form-group has-feedback">
+		<div class="form-group has-feedback has-feedback-left">
 			<input type="text" class="form-control" placeholder="Search user" ng-model="searchUser" />
 			<i class="glyphicon glyphicon-user form-control-feedback"></i>
 		</div>
