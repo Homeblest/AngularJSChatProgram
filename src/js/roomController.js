@@ -36,7 +36,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     // to display all connected users in that room
     socket.emit('rooms');
     socket.on('roomlist', function(list) {
-        $scope.currentUsers = list[$scope.currentRoom].users;
+        $scope.currentUsers = Object.keys(list[$scope.currentRoom].users);
         $scope.allMessages = list[$scope.currentRoom].messageHistory;
         $scope.roomTopic = list[$scope.currentRoom].topic;
         $scope.roomOps = Object.keys(list[$scope.currentRoom].ops);
@@ -45,7 +45,6 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     $scope.isOp = function(name) {
         for (var i = 0; i < $scope.roomOps.length; ++i) {
             if(name === $scope.roomOps[i]){
-                console.log(name + " is op.");
                 return true;
             }
         }

@@ -1,8 +1,7 @@
-
 <div class="row">
 	<div class="col-md-1">
 		<button class="btn btn-primary leaveBtn" ng-click="leaveRoom()">
-			&lt;-- Leave
+		&lt;-- Leave
 		</button>
 	</div>
 	<div class="col-md-4 col-md-offset-3">
@@ -11,7 +10,7 @@
 </div>
 
 <div class="row chatRow">
-
+	
 	<div class="col-md-10">
 		<div id="chatWindow">
 			<ul>
@@ -25,9 +24,12 @@
 			</ul>
 		</div>
 	</div>
-
+	
 	<div class="col-md-2 roomUserList">
-		<input type="text" ng-model="searchUser"></input>
+		<div class="form-group has-feedback">
+			<input type="text" class="form-control" placeholder="Search user" ng-model="searchUser" />
+			<i class="glyphicon glyphicon-user form-control-feedback"></i>
+		</div>
 		<ul class="list-group">
 			<li class ="list-group-item" ng-repeat="user in currentUsers | filter:searchUser">
 				<span class="glyphicon glyphicon-user"></span>
