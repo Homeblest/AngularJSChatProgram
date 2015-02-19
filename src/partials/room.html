@@ -12,7 +12,7 @@
 <div class="row chatRow">
 	
 	<div class="col-md-10">
-		<div id="chatWindow">
+		<div id="chatWindow" scroll-glue>
 			<ul>
 				<li>Topic: {{roomTopic}}</li>
 			</ul>
@@ -26,10 +26,12 @@
 	</div>
 	
 	<div class="col-md-2 roomUserList">
-		<div class="form-group has-feedback">
+
+		<div class="form-group has-feedback has-feedback-left">
 			<input type="text" class="form-control" placeholder="Search user" ng-model="searchUser" />
 			<i class="glyphicon glyphicon-user form-control-feedback"></i>
 		</div>
+
 		<ul class="list-group">
 			<li class ="list-group-item btn btn-primary" ng-repeat="user in currentUsers | filter:searchUser">
 				<span class="glyphicon glyphicon-user"></span>
@@ -37,11 +39,13 @@
 				<span ng-if="isOp(currentUser) && !isOp(user)" class="btnRemove btn glyphicon glyphicon-remove" ng-click=""></span>
 			</li>
 		</ul>
+
 	</div>
 </div>
 
 <div class="row">
 	<div class="col-md-12">
+
 		<form accept-charset="UTF-8" role="form" class="form-inline" id="chatForm" name="myForm">
 			<fieldset>
 				<div class="form-group" id="divFormGroup">
@@ -50,5 +54,6 @@
 				<input class="btn btn-primary chatButton" type="submit" value="Send" ng-click="sendMsg()"></input>
 			</fieldset>
 		</form>
+		
 	</div>
 </div>

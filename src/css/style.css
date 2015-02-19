@@ -12,9 +12,6 @@ body {
 .chatRow {
 	margin-top: 2%;
 }
-.leaveBtn {
-	margin-top: 16px;
-}
 #chatWindow {
 	text-align: left;
 	background-color: white;
@@ -24,10 +21,11 @@ body {
 }
 #chatForm {
 	width: 100%;
-	margin-top: 10px;
+	margin-top: 1%;
 }
 .chatButton {
 	float: left;
+	width: 6.1%;
 }
 #divFormGroup {
 	width: 76.8%;

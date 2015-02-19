@@ -1,4 +1,4 @@
-var RuChat = angular.module('RuChat', ['ngRoute']);
+var RuChat = angular.module('RuChat', ['ngRoute', 'luegg.directives']);
 
 RuChat.config(
     function($routeProvider) {
