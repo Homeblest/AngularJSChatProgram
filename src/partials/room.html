@@ -31,9 +31,10 @@
 			<i class="glyphicon glyphicon-user form-control-feedback"></i>
 		</div>
 		<ul class="list-group">
-			<li class ="list-group-item" ng-repeat="user in currentUsers | filter:searchUser">
+			<li class ="list-group-item btn btn-primary" ng-repeat="user in currentUsers | filter:searchUser">
 				<span class="glyphicon glyphicon-user"></span>
 				{{user}} <span ng-if="isOp(user)">(OP)</span>
+				<span ng-if="isOp(currentUser) && !isOp(user)" class="btnRemove btn glyphicon glyphicon-remove" ng-click=""></span>
 			</li>
 		</ul>
 	</div>

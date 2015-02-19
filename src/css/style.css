@@ -56,3 +56,9 @@ body {
 .msgTime {
 	float:right;
 }
+
+.btnRemove {
+	position: absolute;
+	left: 0%;
+	padding: 0px 0px;
+}
