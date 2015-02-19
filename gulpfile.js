@@ -30,7 +30,7 @@ gulp.task('js', function() {
         }))
         .pipe(jshint.reporter(stylish))
         .pipe(jshint.reporter('fail'))
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(concat('app.js'))
         .pipe(gulp.dest('dist/js'))
 });
