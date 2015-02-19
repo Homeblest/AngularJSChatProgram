@@ -39,8 +39,8 @@
 					{{user}} <span ng-if="isOp(user)">(OP)</span>
 				</div>
 				<div>
-					<div ng-if="isOp(currentUser) && !isOp(user)" class="col-md-6 btn" ng-click="kick()">Kick</div>
-					<div ng-if="isOp(currentUser) && !isOp(user)" class="col-md-6 btn" ng-click="ban()">Ban</div>
+					<div ng-if="isOp(currentUser) && !isOp(user)" class="col-md-6 btn" ng-click="kick(user)">Kick</div>
+					<div ng-if="isOp(currentUser) && !isOp(user)" class="col-md-6 btn" ng-click="ban(user)">Ban</div>
 				</div>
 			</div>
 		</div>

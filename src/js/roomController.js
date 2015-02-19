@@ -59,21 +59,29 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         $scope.message = "";
     };
     
-    $scope.kick = function () {
+    $scope.kick = function (user) {
         var data = {
             room: $scope.currentRoom,
-            user: $scope.currentUser
+            user: user
         };
         socket.emit('kick', data);
-    }
+    };
 
-    $scope.ban = function () {
+    // $scope.isInUserList = function (user) {
+    //     for (var i = 0; i < $scope.currentUsers.length; i++) {
+    //         if ($scope.currentUsers[i] != user) {
+    //             alert
+    //         }
+    //     }
+    // }
+
+    $scope.ban = function (user) {
         var data = {
             room: $scope.currentRoom,
-            user: $scope.currentUser
+            user: user
         };
         socket.emit('ban', data);
-    }
+    };
 
     var sendJoinMsg = function() {
         var data = {

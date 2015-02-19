@@ -126,8 +126,25 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
             roomName: $scope.currentRoom,
             msg: $scope.message
         };
+        var lkkj = "lkjl";
         socket.emit('sendmsg', data);
         $scope.message = "";
+    };
+    
+    $scope.kick = function (user) {
+        var data = {
+            room: $scope.currentRoom,
+            user: user
+        };
+        socket.emit('kick', data);
+    };
+
+    $scope.ban = function (user) {
+        var data = {
+            room: $scope.currentRoom,
+            user: user
+        };
+        socket.emit('ban', data);
     };
 
     var sendJoinMsg = function() {
