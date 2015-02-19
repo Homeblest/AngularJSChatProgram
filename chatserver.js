@@ -13,6 +13,7 @@ var users = {};
 
 //Default room.
 rooms.lobby = new Room();
+rooms.lobby.name = 'lobby';
 rooms.lobby.setTopic("Welcome to the lobby!");
 
 io.sockets.on('connection', function (socket) {
@@ -26,6 +27,8 @@ io.sockets.on('connection', function (socket) {
 
 			//Store user object in global user roster.
 			users[username] = { username: socket.username, channels: {lobby: rooms.lobby}, socket: this };
+			// Add the user to the lobby
+			rooms.lobby.users[username] = username;
 			fn(true); // Callback, user name was available
 		}
 		else {
@@ -44,6 +47,8 @@ io.sockets.on('connection', function (socket) {
 		//If the room does not exist
 		if(rooms[room] === undefined) {
 			rooms[room] = new Room();
+			// Set the name
+			rooms[room].name = room;
 			//Op the user if he creates the room.
 			rooms[room].ops[socket.username] = socket.username;
 			//If the user wants to password protect the room we set the password.
@@ -315,6 +320,7 @@ io.sockets.on('connection', function (socket) {
 
 //Define the Room class/object.
 function Room() {
+	this.name = "noName",
 	this.users = {},
 	this.ops = {},
 	this.banned = {},

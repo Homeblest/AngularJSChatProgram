@@ -2,7 +2,6 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
 
     $scope.currentUser = $routeParams.user;
     $scope.allUsers = [];
-    $scope.curUserChannels = {};
 
     // Get the list of all rooms
     socket.emit('rooms');
@@ -24,15 +23,28 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         $location.path('/room/' + $scope.currentUser + '/' + $scope.roomName);
     };
 
+    $scope.curUserChannels = {};
 
     socket.emit('getUserChannels');
 
     socket.on('getCurUserChannels', function(channels){
         $scope.curUserChannels = channels;
-        var list = Object.keys(channels);
-        for(var i = 0; i < list.length; i++){
-            console.log(Object.keys(channels));
-        }
     });
+
+    $scope.data = {
+            roomName: "",
+            msg: ""
+        };
+
+    $scope.sendMsg = function(channel) {
+
+        $scope.data.msg = $scope.data.msg;
+        $scope.data.roomName = channel;
+
+        socket.emit('sendmsg', $scope.data);
+        $scope.data.msg = "";
+    };
+
+    
 
 });

@@ -19,23 +19,39 @@
   
   <div class="col-md-10" style="overflow:auto;">
     <tabset>
-      <tab heading="Justified">
+      <tab ng-repeat="channel in curUserChannels" heading="{{channel.name}}">
         <div id="chatWindow" scroll-glue>
           <ul>
-            <li>Topic: {{roomTopic}}</li>
+            <li>Topic: {{channel.topic}}</li>
           </ul>
-          <ul ng-repeat="msg in allMessages">
+          <ul ng-repeat="msg in channel.messageHistory">
             <li class="userMsg">
               {{msg.nick}}:  {{msg.message}}
               <span class="msgTime">{{msg.timestamp | date:'HH:mm'}}</span>
             </li>
           </ul>
         </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <ng-form accept-charset="UTF-8" class="form-inline" id="chatForm" name="myForm">
+              <fieldset>
+                <div class="form-group" id="divFormGroup">
+                  <input type="text" id="chatInput" autocomplete="off" ng-model="data.msg" autofocus>
+                </div>
+                <input class="btn btn-primary chatButton" type="submit" value="Send" ng-click="sendMsg(channel.name)"></input>
+              </fieldset>
+            </ng-form>
+
+          </div>
+        </div>
       </tab>
     </tabset>
-</div>
+  </div>
   
 </div>
+
+
 
 <div class="panel panel-default">
   

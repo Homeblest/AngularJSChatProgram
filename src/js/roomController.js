@@ -28,7 +28,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     // fires when leave button is clicked
     $scope.leaveRoom = function() {
         sendLeaveMsg();
-        socket.emit('partroom', $scope.currentRoom);
+        //socket.emit('partroom', $scope.currentRoom);
         $location.path('/rooms/' + $scope.currentUser);
     };
 
