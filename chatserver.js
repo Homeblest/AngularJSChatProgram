@@ -25,7 +25,7 @@ io.sockets.on('connection', function (socket) {
 			socket.username = username;
 
 			//Store user object in global user roster.
-			users[username] = { username: socket.username, channels: {}, socket: this };
+			users[username] = { username: socket.username, channels: {lobby: rooms.lobby}, socket: this };
 			fn(true); // Callback, user name was available
 		}
 		else {
@@ -51,7 +51,7 @@ io.sockets.on('connection', function (socket) {
 				rooms[room].setPassword(pass);
 			}
 			//Keep track of the room in the user object.
-			users[socket.username].channels[room] = room;
+			users[socket.username].channels[room] = rooms[room];
 			// Insert the user into the room.
 			rooms[room].users[socket.username] = socket.username;
 			//Send the room information to the client.
@@ -92,7 +92,7 @@ io.sockets.on('connection', function (socket) {
 					rooms[room].ops[socket.username] = socket.username;
 				}
 				//Keep track of the room in the user object.
-				users[socket.username].channels[room] = room;
+				users[socket.username].channels[room] = rooms[room];
 				//Send the room information to the client.
 				io.sockets.emit('updateusers', room, rooms[room].users, rooms[room].ops);
 				socket.emit('updatechat', room, rooms[room].messageHistory);
@@ -270,6 +270,13 @@ io.sockets.on('connection', function (socket) {
 			userlist.push(user);
 		}
 		socket.emit('userlist', userlist);
+	});
+
+	// Get all room object from user
+	socket.on('getUserChannels', function(){
+		var curUserChannels = users[socket.username].channels;
+
+		socket.emit('getCurUserChannels', curUserChannels);
 	});
 
 	//Sets topic for room.

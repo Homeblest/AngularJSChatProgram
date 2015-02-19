@@ -1,4 +1,4 @@
-var RuChat = angular.module('RuChat', ['ngRoute', 'luegg.directives']);
+var RuChat = angular.module('RuChat', ['ngRoute', 'luegg.directives', 'ui.bootstrap']);
 
 RuChat.config(
     function($routeProvider) {
@@ -156,6 +156,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
 
     $scope.currentUser = $routeParams.user;
     $scope.allUsers = [];
+    $scope.curUserChannels = {};
 
     // Get the list of all rooms
     socket.emit('rooms');
@@ -176,5 +177,17 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         socket.emit('rooms');
         $location.path('/room/' + $scope.currentUser + '/' + $scope.roomName);
     };
+
+
+    socket.emit('getUserChannels');
+
+    socket.on('getCurUserChannels', function(channels){
+        console.log(channels.lobby.topic);
+        $scope.curUserChannels = channels;
+        var list = Object.keys(channels);
+        for(var i = 0; i < list.length; i++){
+            console.log(Object.keys(channels));
+        }
+    });
 
 });

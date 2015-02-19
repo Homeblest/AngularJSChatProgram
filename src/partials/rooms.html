@@ -1,29 +1,49 @@
 <h1>Hi {{currentUser}}!</h1>
-<h2>These are the active chat rooms!</h2>
 
-<table class="table table-striped table-hover table-bordered ">
-  <thead>
-    <tr>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ng-repeat="room in rooms">
-      <td><h4>{{room}}</h4></td>
-      <td><a href="#/room/{{currentUser}}/{{room}}/" class="btn btn-success">Join</a></td>
-    </tr>
-  </tbody>
-</table>
+<div class="row">
+  <div class="col-md-2">
+    <table class="table table-striped table-hover ">
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="room in rooms">
+          <td><a href="#/room/{{currentUser}}/{{room}}/" class="btn btn-success">{{room}}</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="col-md-10" style="overflow:auto;">
+    <tabset>
+      <tab heading="Justified">
+        <div id="chatWindow" scroll-glue>
+          <ul>
+            <li>Topic: {{roomTopic}}</li>
+          </ul>
+          <ul ng-repeat="msg in allMessages">
+            <li class="userMsg">
+              {{msg.nick}}:  {{msg.message}}
+              <span class="msgTime">{{msg.timestamp | date:'HH:mm'}}</span>
+            </li>
+          </ul>
+        </div>
+      </tab>
+    </tabset>
+</div>
+  
+</div>
 
 <div class="panel panel-default">
-
+  
   <div class="panel-heading">
     <h4>You can also create your own room!</h4>
   </div>
-
+  
   <div class="panel-body">
-
     <form class="form-inline" name="createRoomForm" ng-submit="createRoom()">
       <div class="form-group">
         <label for="roomName"></label>
@@ -31,9 +51,8 @@
       </div>
       <button type="submit" class="btn btn-primary">Create</button>
     </form>
-
   </div>
-
+  
 </div>
 
 <div class="panel panel-default">
