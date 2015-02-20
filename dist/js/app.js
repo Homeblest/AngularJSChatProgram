@@ -222,6 +222,8 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     socket.on('updateusers', function(room, users, ops) {
         // This fires the rooms event which fires the roomlist event.
         socket.emit('rooms');
+        $scope.curUserChannels[room].users = users;
+        $scope.curUserChannels[room].ops = ops;
     });
 
     $scope.curUserChannels = {};
