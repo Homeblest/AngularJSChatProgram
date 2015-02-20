@@ -14,7 +14,11 @@
   <div class="col-md-10" style="overflow:auto;">
 
     <tabset justified="true">
-      <tab ng-repeat="channel in curUserChannels" heading="{{channel.name}}">
+      <tab ng-repeat="channel in curUserChannels">
+        <tab-heading>
+          {{channel.name}}
+          <a ng-click="leaveRoom(channel.name)"href=''><i class="glyphicon glyphicon-remove" style="float:right;"></i></a>
+        </tab-heading>
         <div id="chatWindow" class="col-md-10" scroll-glue>
           <ul>
             <li>Topic: {{channel.topic}}</li>
