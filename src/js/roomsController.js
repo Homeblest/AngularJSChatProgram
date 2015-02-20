@@ -47,6 +47,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     });
 
     $scope.createRoom = function(roomName) {
+        
         if ($scope.curUserChannels[roomName] === undefined) {
             var joinObj = {
                 room: roomName
@@ -175,5 +176,10 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
             msg: dataMessage.message
         };
         socket.emit('sendmsg', data);
+    };
+
+    $scope.sendPrivateMsg = function(name) {
+        console.log("sendt");
+
     };
 });

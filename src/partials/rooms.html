@@ -40,9 +40,9 @@
 
           <div class="list-group">
             <div class ="row list-group-item userItem" ng-repeat="(key, value) in channel.users | filter:searchUser">
-              <div class="col-md-12 btn">
+              <div class="col-md-12 btn" ng-click="sendPrivateMsg(key)">
                 <span class="glyphicon glyphicon-user"></span>
-              {{key}} <span ng-if="isOp(channel.name, key)">(OP)</span>
+                {{key}} <span ng-if="isOp(channel.name, key)">(OP)</span>
               </div>
               <div>
                 <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-6 btn" ng-click="kick(channel.name, key)">Kick</div>
