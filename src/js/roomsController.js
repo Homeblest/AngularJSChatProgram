@@ -18,23 +18,35 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     });
 
-    $scope.createRoom = function() {
+    $scope.createRoom = function(roomName) {
+        //$location.path('/room/' + $scope.currentUser + '/' + $scope.roomName);
+        var joinObj = {
+            room: roomName
+        };
+        socket.emit('joinroom', joinObj, function(success, reason) {
+            if (!success) {
+                $scope.errorMessage = reason;
+            }
+            sendJoinMsg(roomName);
+        });
+
+        socket.emit('getUserChannels');
         socket.emit('rooms');
-        $location.path('/room/' + $scope.currentUser + '/' + $scope.roomName);
+
     };
 
     $scope.curUserChannels = {};
 
     socket.emit('getUserChannels');
 
-    socket.on('getCurUserChannels', function(channels){
+    socket.on('getCurUserChannels', function(channels) {
         $scope.curUserChannels = channels;
     });
 
     $scope.data = {
-            roomName: "",
-            msg: ""
-        };
+        roomName: "",
+        msg: ""
+    };
 
     $scope.sendMsg = function(channel) {
 
@@ -45,6 +57,25 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         $scope.data.msg = "";
     };
 
-    
+
+    socket.on('updatechat', function(roomName, history) {
+        $scope.curUserChannels[roomName].messageHistory = history;
+    });
+
+    var sendJoinMsg = function(roomName) {
+        var data = {
+            roomName: roomName,
+            msg: "Joined Room"
+        };
+        socket.emit('sendmsg', data);
+    };
+
+    var sendLeaveMsg = function(roomName) {
+        var data = {
+            roomName: roomName,
+            msg: "Left Room"
+        };
+        socket.emit('sendmsg', data);
+    };
 
 });

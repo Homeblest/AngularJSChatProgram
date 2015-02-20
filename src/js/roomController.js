@@ -75,7 +75,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         socket.emit('sendmsg', data);
     };
 
-    socket.on('updatechat', function(roomName, history) {
+    socket.on('updatechat', function (roomName, history) {
         for (var i = 0; i < history.length; i++) {
             $scope.allMessages[i] = history[i];
         }

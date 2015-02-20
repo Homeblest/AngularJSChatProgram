@@ -60,12 +60,12 @@
   </div>
   
   <div class="panel-body">
-    <form class="form-inline" name="createRoomForm" ng-submit="createRoom()">
+    <form class="form-inline" name="createRoomForm">
       <div class="form-group">
         <label for="roomName"></label>
         <input type="text" name="nameOfRoom" required class="form-control" id="roomName" placeholder="What's the name of your room?" ng-model="roomName">
       </div>
-      <button type="submit" class="btn btn-primary">Create</button>
+      <button type="submit" class="btn btn-primary" ng-click="createRoom(roomName)">Create</button>
     </form>
   </div>
   
