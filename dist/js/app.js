@@ -188,6 +188,17 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     $scope.currentUser = $routeParams.user;
     $scope.allUsers = [];
 
+    var joinObj1 = {
+        room: 'lobby'
+    };
+    socket.emit('joinroom', joinObj1, function(success, reason) {
+        if (!success) {
+            console.log(reason);
+        } else {
+            console.log("joined lobby");
+        }
+    });
+
     // Get the list of all rooms
     socket.emit('rooms');
     // respond to emitted event from server
@@ -272,6 +283,16 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
             msg: "Left Room"
         };
         socket.emit('sendmsg', data);
+    };
+
+    $scope.isOp = function(channel, name) {
+        var roomOps = Object.keys($scope.curUserChannels[channel].ops);
+
+        for (var i = 0; i < roomOps.length; ++i) {
+            if (name === roomOps[i]) {
+                return true;
+            }
+        }
     };
 
 });

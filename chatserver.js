@@ -28,7 +28,6 @@ io.sockets.on('connection', function (socket) {
 			//Store user object in global user roster.
 			users[username] = { username: socket.username, channels: {lobby: rooms.lobby}, socket: this };
 			// Add the user to the lobby
-			rooms.lobby.users[username] = username;
 			fn(true); // Callback, user name was available
 		}
 		else {
