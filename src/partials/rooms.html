@@ -1,26 +1,21 @@
 <h1>Hi {{currentUser}}!</h1>
 
 <div class="row">
-  <div class="col-md-2">
-    <table class="table table-striped table-hover ">
-      <thead>
-        <tr>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="room in rooms">
-          <td><a ng-click="createRoom(room)" class="btn btn-success">{{room}}</a></td>
-        </tr>
-      </tbody>
-    </table>
+
+  <div class="col-md-2" id="roomList">
+    <h4>Avilable rooms:</h4>
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="room in rooms" style="border:1px solid black">
+          <a ng-click="createRoom(room)" class="btn btn-success">{{room}}</a>
+        </li>
+    </ul>
   </div>
   
   <div class="col-md-10" style="overflow:auto;">
+
     <tabset justified="true">
       <tab ng-repeat="channel in curUserChannels" heading="{{channel.name}}">
-        <div id="chatWindow" scroll-glue>
+        <div id="chatWindow" class="col-md-10" scroll-glue>
           <ul>
             <li>Topic: {{channel.topic}}</li>
           </ul>
@@ -31,24 +26,43 @@
             </li>
           </ul>
         </div>
+
+        <div class="roomUserList col-md-2">
+
+          <div class="form-group has-feedback has-feedback-left">
+            <input type="text" class="form-control" placeholder="Search user" ng-model="searchUser" />
+            <i class="glyphicon glyphicon-user form-control-feedback"></i>
+          </div>
+
+          <ul class="list-group">
+            <li class ="list-group-item" ng-repeat="user in channel.users | filter:searchUser">
+              <span class="glyphicon glyphicon-user"></span>
+              {{user}} <span ng-if="isOp(user)">(OP)</span>
+            </li>
+          </ul>
+
+        </div>
+      
+
         <div class="row">
+
           <div class="col-md-12">
             
-            <ng-form accept-charset="UTF-8" class="form-inline" id="chatForm" name="myForm">
+            <form accept-charset="UTF-8" class="form-inline" id="chatForm" name="myForm">
               <fieldset>
                 <div class="form-group" id="divFormGroup">
                   <input type="text" id="chatInput" autocomplete="off" ng-model="data.msg" autofocus>
                 </div>
                 <input class="btn btn-primary chatButton" type="submit" value="Send" ng-click="sendMsg(channel.name)"></input>
               </fieldset>
-            </ng-form>
+            </form>
 
           </div>
         </div>
       </tab>
     </tabset>
   </div>
-  
+
 </div>
 
 
