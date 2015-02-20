@@ -35,9 +35,9 @@
           </div>
 -->
           <ul class="list-group">
-            <li class ="list-group-item" ng-repeat="user in channel.users | filter:searchUser">
+            <li class ="list-group-item" ng-repeat="(key, value) in channel.users | filter:searchUser">
               <span class="glyphicon glyphicon-user"></span>
-              {{user}} <span ng-if="isOp(user)">(OP)</span>
+              {{key}} <span ng-if="isOp(channel.name, key)">(OP)</span>
             </li>
           </ul>
 
