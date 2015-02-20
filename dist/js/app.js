@@ -69,6 +69,13 @@ RuChat.controller('loginController', function($scope, $location, $rootScope, $ro
         }
     };
 });
+RuChat.controller('modalInstanceController', function($scope, $modalInstance, message) {
+  $scope.message = message;
+
+  $scope.leave = function () {
+    $modalInstance.dismiss('cancel');
+  };
+});
 RuChat.controller('roomController', function($scope, $location, $rootScope, $routeParams, socket) {
 
     $scope.currentRoom = $routeParams.room;
@@ -126,7 +133,6 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
             roomName: $scope.currentRoom,
             msg: $scope.message
         };
-        var lkkj = "lkjl";
         socket.emit('sendmsg', data);
         $scope.message = "";
     };
@@ -139,6 +145,17 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         socket.emit('kick', data);
     };
 
+    $scope.isInUserList = function (user) {
+        for (var i = 0; i < $scope.currentUsers.length; i++) {
+            if ($scope.currentUsers[i] == user) {
+                return true;
+            }
+        }
+        // var data = "someString";
+        // $scope.$emit('openModal', data);
+        return false;
+    };
+
     $scope.ban = function (user) {
         var data = {
             room: $scope.currentRoom,
@@ -146,27 +163,6 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         };
         socket.emit('ban', data);
     };
-
-    //for ui-bootstrap if using dropdown in userlist
-    // $scope.collapseChat = function() {
-    //     $(.collabsable).toggleClass(.hide);
-    // };
-    
-    // $scope.kick = function () {
-    //     var data = {
-    //         room: $scope.currentRoom,
-    //         user: $scope.currentUser
-    //     };
-    //     socket.emit('kick', data);
-    // }
-
-    // $scope.ban = function () {
-    //     var data = {
-    //         room: $scope.currentRoom,
-    //         user: $scope.currentUser
-    //     };
-    //     socket.emit('ban', data);
-    // }
 
     var sendJoinMsg = function() {
         var data = {

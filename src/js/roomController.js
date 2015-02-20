@@ -67,13 +67,16 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         socket.emit('kick', data);
     };
 
-    // $scope.isInUserList = function (user) {
-    //     for (var i = 0; i < $scope.currentUsers.length; i++) {
-    //         if ($scope.currentUsers[i] != user) {
-    //             alert
-    //         }
-    //     }
-    // }
+    $scope.isInUserList = function (user) {
+        for (var i = 0; i < $scope.currentUsers.length; i++) {
+            if ($scope.currentUsers[i] == user) {
+                return true;
+            }
+        }
+        // var data = "someString";
+        // $scope.$emit('openModal', data);
+        return false;
+    };
 
     $scope.ban = function (user) {
         var data = {
