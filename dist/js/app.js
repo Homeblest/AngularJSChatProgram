@@ -173,21 +173,29 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     });
 
     $scope.createRoom = function(roomName) {
-        //$location.path('/room/' + $scope.currentUser + '/' + $scope.roomName);
-        var joinObj = {
-            room: roomName
-        };
-        socket.emit('joinroom', joinObj, function(success, reason) {
-            if (!success) {
-                $scope.errorMessage = reason;
-            }
-            sendJoinMsg(roomName);
-        });
+        if ($scope.curUserChannels[roomName] === undefined) {
+            var joinObj = {
+                room: roomName
+            };
+            socket.emit('joinroom', joinObj, function(success, reason) {
+                if (!success) {
+                    $scope.errorMessage = reason;
+                } else {
+                    sendJoinMsg(roomName);
+                }
 
-        socket.emit('getUserChannels');
-        socket.emit('rooms');
+            });
 
+            socket.emit('getUserChannels');
+            socket.emit('rooms');
+            $scope.roomName = "";
+        }
     };
+
+    socket.on('updateusers', function(room, users, ops) {
+        // This fires the rooms event which fires the roomlist event.
+        socket.emit('rooms');
+    });
 
     $scope.curUserChannels = {};
 
@@ -195,6 +203,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
 
     socket.on('getCurUserChannels', function(channels) {
         $scope.curUserChannels = channels;
+        sendJoinMsg('lobby');
     });
 
     $scope.data = {

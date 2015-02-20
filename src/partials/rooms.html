@@ -11,14 +11,14 @@
       </thead>
       <tbody>
         <tr ng-repeat="room in rooms">
-          <td><a href="#/room/{{currentUser}}/{{room}}/" class="btn btn-success">{{room}}</a></td>
+          <td><a ng-click="createRoom(room)" class="btn btn-success">{{room}}</a></td>
         </tr>
       </tbody>
     </table>
   </div>
   
   <div class="col-md-10" style="overflow:auto;">
-    <tabset>
+    <tabset justified="true">
       <tab ng-repeat="channel in curUserChannels" heading="{{channel.name}}">
         <div id="chatWindow" scroll-glue>
           <ul>
@@ -60,12 +60,12 @@
   </div>
   
   <div class="panel-body">
-    <form class="form-inline" name="createRoomForm">
+    <form class="form-inline" name="createRoomForm" ng-submit="createRoom(roomName)">
       <div class="form-group">
         <label for="roomName"></label>
         <input type="text" name="nameOfRoom" required class="form-control" id="roomName" placeholder="What's the name of your room?" ng-model="roomName">
       </div>
-      <button type="submit" class="btn btn-primary" ng-click="createRoom(roomName)">Create</button>
+      <button type="submit" class="btn btn-primary">Create</button>
     </form>
   </div>
   
