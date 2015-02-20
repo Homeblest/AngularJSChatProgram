@@ -3,6 +3,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     $scope.currentRoom = $routeParams.room;
     $scope.currentUser = $routeParams.user;
     $scope.currentUsers = [];
+    $scope.bannedUsers = [];
     $scope.errorMessage = '';
     $scope.allMessages = [];
     $scope.allRoomUsers = [];
@@ -40,6 +41,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         $scope.allMessages = list[$scope.currentRoom].messageHistory;
         $scope.roomTopic = list[$scope.currentRoom].topic;
         $scope.roomOps = Object.keys(list[$scope.currentRoom].ops);
+        $scope.bannedUsers = Object.keys(list[$scope.currentRoom].banned);
     });
 
     $scope.isOp = function(name) {
@@ -67,13 +69,14 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         socket.emit('kick', data);
     };
 
-    // $scope.isInUserList = function (user) {
-    //     for (var i = 0; i < $scope.currentUsers.length; i++) {
-    //         if ($scope.currentUsers[i] != user) {
-    //             alert
-    //         }
-    //     }
-    // }
+    $scope.isInUserList = function (user) {
+        for (var i = 0; i < $scope.currentUsers.length; i++) {
+            if ($scope.currentUsers[i] == user) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     $scope.ban = function (user) {
         var data = {
