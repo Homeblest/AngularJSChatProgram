@@ -3,15 +3,23 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     $scope.currentUser = $routeParams.user;
     $scope.allUsers = [];
 
+    // Make the user join the lobby automatically
     var joinObj1 = {
         room: 'lobby'
     };
     socket.emit('joinroom', joinObj1, function(success, reason) {
         if (!success) {
             console.log(reason);
-        } else {
-            console.log("joined lobby");
         }
+    });
+
+    $scope.curUserChannels = {};
+
+    socket.emit('getUserChannels');
+
+    socket.on('getCurUserChannels', function(channels) {
+        $scope.curUserChannels = channels;
+        sendJoinMsg('lobby');
     });
 
     // Get the list of all rooms
@@ -21,6 +29,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         $scope.rooms = Object.keys(list);
     });
 
+    // Get the list of all connected users
     socket.emit('users');
 
     socket.on('userlist', function(userlist) {
@@ -52,17 +61,11 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     socket.on('updateusers', function(room, users, ops) {
         // This fires the rooms event which fires the roomlist event.
         socket.emit('rooms');
-        $scope.curUserChannels[room].users = users;
-        $scope.curUserChannels[room].ops = ops;
-    });
+        if ($scope.curUserChannels[room] !== undefined) {
+            $scope.curUserChannels[room].users = users;
+            $scope.curUserChannels[room].ops = ops;
+        }
 
-    $scope.curUserChannels = {};
-
-    socket.emit('getUserChannels');
-
-    socket.on('getCurUserChannels', function(channels) {
-        $scope.curUserChannels = channels;
-        sendJoinMsg('lobby');
     });
 
     $scope.data = {
@@ -81,7 +84,9 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
 
 
     socket.on('updatechat', function(roomName, history) {
-        $scope.curUserChannels[roomName].messageHistory = history;
+        if ($scope.curUserChannels[roomName] !== undefined) {
+            $scope.curUserChannels[roomName].messageHistory = history;
+        }
     });
 
     var sendJoinMsg = function(roomName) {
