@@ -2,6 +2,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
 
     $scope.currentUser = $routeParams.user;
     $scope.allUsers = [];
+    $scope.bannedUsers = [];
 
     var joinObj1 = {
         room: 'lobby'
@@ -108,6 +109,53 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
                 return true;
             }
         }
+    };
+
+    $scope.kick = function (roomName, user) {
+        var data = {
+            room: roomName,
+            user: user
+        };
+        socket.emit('kick', data);
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been kicked out"
+        };
+        sendInOutMsg(dataMessage);
+    };
+
+    $scope.ban = function (roomName, user) {
+        var data = {
+            room: roomName,
+            user: user
+        };
+        socket.emit('ban', data);
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been banned"
+        };
+        sendInOutMsg(dataMessage);
+    };
+
+    $scope.unBan = function (roomName, user) {
+        var data = {
+            room: roomName,
+            user: user
+        };
+        socket.emit('unban', data);
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been unbanned"
+        };
+        sendInOutMsg(dataMessage);
+    };
+
+    var sendInOutMsg = function(dataMessage) {
+        var data = {
+            roomName: dataMessage.roomName,
+            msg: dataMessage.message
+        };
+        socket.emit('sendmsg', data);
     };
 
 });
