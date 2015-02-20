@@ -3,6 +3,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     $scope.currentRoom = $routeParams.room;
     $scope.currentUser = $routeParams.user;
     $scope.currentUsers = [];
+    $scope.bannedUsers = [];
     $scope.errorMessage = '';
     $scope.allMessages = [];
     $scope.allRoomUsers = [];
@@ -40,6 +41,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         $scope.allMessages = list[$scope.currentRoom].messageHistory;
         $scope.roomTopic = list[$scope.currentRoom].topic;
         $scope.roomOps = Object.keys(list[$scope.currentRoom].ops);
+        $scope.bannedUsers = Object.keys(list[$scope.currentRoom].banned);
     });
 
     $scope.isOp = function(name) {
@@ -73,8 +75,6 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
                 return true;
             }
         }
-        // var data = "someString";
-        // $scope.$emit('openModal', data);
         return false;
     };
 
