@@ -242,7 +242,7 @@ io.sockets.on('connection', function (socket) {
 			//Add the user to the ban list and remove him from the room user roster.
 			rooms[banObj.room].banUser(banObj.user);
 			//Kick the user from the room.
-			io.sockets.emit('banned', banObj.room, banObj.user, socket.username);
+			io.sockets.emit('banned', banObj.room, rooms[banObj.room].banned, rooms[banObj.room].ops);
 			io.sockets.emit('updateusers', banObj.room, rooms[banObj.room].users, rooms[banObj.room].ops);
 			fn(true);
 		}

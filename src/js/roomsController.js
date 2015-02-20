@@ -2,7 +2,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
 
     $scope.currentUser = $routeParams.user;
     $scope.allUsers = [];
-    $scope.bannedUsers = [];
+    //$scope.bannedUsers = {};
 
     // Make the user join the lobby automatically
     var joinObj1 = {
@@ -21,6 +21,12 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     socket.on('getCurUserChannels', function(channels) {
         $scope.curUserChannels = channels;
         sendJoinMsg('lobby');
+    });
+
+    socket.on('banned', function(room, users, username) {
+        if ($scope.curUserChannels[room] !== undefined) {
+            $scope.curUserChannels[room].banned = users;
+        }
     });
 
     // Get the list of all rooms
