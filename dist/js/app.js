@@ -191,6 +191,8 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     socket.emit('joinroom', joinObj1, function(success, reason) {
         if (!success) {
             console.log(reason);
+        }else {
+            sendJoinMsg('lobby');
         }
     });
 
@@ -200,7 +202,6 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
 
     socket.on('getCurUserChannels', function(channels) {
         $scope.curUserChannels = channels;
-        sendJoinMsg('lobby');
     });
 
     // Get the list of all rooms
@@ -245,6 +246,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         if ($scope.curUserChannels[room] !== undefined) {
             $scope.curUserChannels[room].users = users;
             $scope.curUserChannels[room].ops = ops;
+            socket.emit('getUserChannels');
         }
 
     });
@@ -296,4 +298,9 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     };
 
+    $scope.leaveRoom = function(channel) {
+        console.log("Leaving " + channel);
+        sendLeaveMsg(channel);
+        socket.emit('partroom', channel);
+    };
 });
