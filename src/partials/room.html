@@ -47,6 +47,19 @@
 			</div>
 		</div>
 
+		<div ng-if="isOp(currentUser)" class="list-group">
+			<span>Banned users:</span>
+			<div class ="row list-group-item bannedUserItem" ng-repeat="user in bannedUsers | filter:searchUser">
+				<div class="col-md-12 btn">
+					<span class="glyphicon glyphicon-user"></span>
+					{{user}}
+				</div>
+				<div>
+					<div ng-if="isOp(currentUser) && !isOp(user)" class="col-md-12 btn" ng-click="unBan(user)">Unban</div>
+				</div>
+			</div>
+		</div>
+
 	</div>
 </div>
 

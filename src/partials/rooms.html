@@ -32,19 +32,37 @@
         </div>
 
         <div class="roomUserList col-md-2">
-<!--
+
           <div class="form-group has-feedback has-feedback-left">
             <input type="text" class="form-control" placeholder="Search user" ng-model="searchUser" />
             <i class="glyphicon glyphicon-user form-control-feedback"></i>
           </div>
--->
-          <ul class="list-group">
-            <li class ="list-group-item" ng-repeat="(key, value) in channel.users | filter:searchUser">
-              <span class="glyphicon glyphicon-user"></span>
-              {{key}} <span ng-if="isOp(channel.name, key)">(OP)</span>
-            </li>
-          </ul>
 
+          <div class="list-group">
+            <div class ="row list-group-item userItem" ng-repeat="(key, value) in channel.users | filter:searchUser">
+              <div class="col-md-12 btn">
+                <span class="glyphicon glyphicon-user"></span>
+              {{key}} <span ng-if="isOp(channel.name, key)">(OP)</span>
+              </div>
+              <div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-6 btn" ng-click="kick(channel.name, key)">Kick</div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-6 btn" ng-click="ban(channel.name, key)">Ban</div>
+              </div>
+            </div>
+          </div>
+
+          <div ng-if="isOp(channel.name, currentUser)" class="list-group">
+            <span>Banned users:</span>
+            <div class ="row list-group-item bannedUserItem" ng-repeat="(key, value) in channel.banned | filter:searchUser">
+              <div class="col-md-12 btn">
+                <span class="glyphicon glyphicon-user"></span>
+                {{key}}
+              </div>
+              <div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-12 btn" ng-click="unBan(channel.name, key)">Unban</div>
+              </div>
+            </div>
+          </div>
         </div>
       
 
