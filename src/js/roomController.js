@@ -98,10 +98,10 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         sendInOutMsg("The user " + user + " has been unbanned");
     };
 
-    var sendInOutMsg = function(message) {
+    var sendInOutMsg = function(dataMessage) {
         var data = {
-            roomName: $scope.currentRoom,
-            msg: message
+            roomName: dataMessage.roomName,
+            msg: dataMessage.message
         };
         socket.emit('sendmsg', data);
     };

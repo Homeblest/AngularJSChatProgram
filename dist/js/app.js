@@ -169,10 +169,10 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         sendInOutMsg("The user " + user + " has been unbanned");
     };
 
-    var sendInOutMsg = function(message) {
+    var sendInOutMsg = function(dataMessage) {
         var data = {
-            roomName: $scope.currentRoom,
-            msg: message
+            roomName: dataMessage.roomName,
+            msg: dataMessage.message
         };
         socket.emit('sendmsg', data);
     };
@@ -187,6 +187,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
 
     $scope.currentUser = $routeParams.user;
     $scope.allUsers = [];
+    $scope.bannedUsers = [];
 
     // Make the user join the lobby automatically
     var joinObj1 = {
