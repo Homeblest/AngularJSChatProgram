@@ -232,6 +232,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     });
 
     $scope.createRoom = function(roomName) {
+        
         if ($scope.curUserChannels[roomName] === undefined) {
             var joinObj = {
                 room: roomName
@@ -309,6 +310,32 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     };
 
+    $scope.op = function(roomName, user) {
+        var data = {
+            room: roomName,
+            user: user
+        };
+        socket.emit('op', data);
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been opped"
+        };
+        sendInOutMsg(dataMessage);
+    };
+
+    $scope.deop = function(roomName, user) {
+        var data = {
+            room: roomName,
+            user: user
+        };
+        socket.emit('deop', data);
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been deopped"
+        };
+        sendInOutMsg(dataMessage);
+    };
+
     $scope.leaveRoom = function(channel) {
         console.log("Leaving " + channel);
         sendLeaveMsg(channel);
@@ -362,7 +389,8 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         socket.emit('sendmsg', data);
     };
 
-    $scope.sendPrivateMsg = function() {
+    $scope.sendPrivateMsg = function(name) {
         console.log("sendt");
+
     };
 });

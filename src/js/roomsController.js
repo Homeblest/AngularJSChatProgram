@@ -125,6 +125,32 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     };
 
+    $scope.op = function(roomName, user) {
+        var data = {
+            room: roomName,
+            user: user
+        };
+        socket.emit('op', data);
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been opped"
+        };
+        sendInOutMsg(dataMessage);
+    };
+
+    $scope.deop = function(roomName, user) {
+        var data = {
+            room: roomName,
+            user: user
+        };
+        socket.emit('deop', data);
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been deopped"
+        };
+        sendInOutMsg(dataMessage);
+    };
+
     $scope.leaveRoom = function(channel) {
         console.log("Leaving " + channel);
         sendLeaveMsg(channel);

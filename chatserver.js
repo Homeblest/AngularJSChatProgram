@@ -182,6 +182,8 @@ io.sockets.on('connection', function (socket) {
 		if(rooms[kickObj.room].ops[socket.username] !== undefined) {
 			//Remove the user from the room roster.
 			delete rooms[kickObj.room].users[kickObj.user];
+			// ABA: Remove from channel in global roster. Makes window disappear
+			delete users[kickObj.user].channels[kickObj.room];
 			//Remove the user from the ops roster.
 			delete rooms[kickObj.room].ops[kickObj.user];
 			//Broadcast to the room who got kicked.
@@ -200,7 +202,7 @@ io.sockets.on('connection', function (socket) {
 		console.log(socket.username + " opped " + opObj.user + " from " + opObj.room);
 		if(rooms[opObj.room].ops[socket.username] !== undefined) {
 			//Remove the user from the room roster.
-			delete rooms[opObj.room].users[opObj.user];
+			//delete rooms[opObj.room].users[opObj.user];
 			//Op the user.
 			rooms[opObj.room].ops[opObj.user] = opObj.user;
 			//Broadcast to the room who got opped.
@@ -222,7 +224,7 @@ io.sockets.on('connection', function (socket) {
 			//Remove the user from the room op roster.
 			delete rooms[deopObj.room].ops[deopObj.user];
 			//Add the user to the room roster.
-			rooms[deopObj.room].users[deopObj.user] = deopObj.user;
+			//rooms[deopObj.room].users[deopObj.user] = deopObj.user;
 			//Broadcast to the room who got opped.
 			io.sockets.emit('deopped', deopObj.room, deopObj.user, socket.username);
 			//Update user list for room.
@@ -254,6 +256,7 @@ io.sockets.on('connection', function (socket) {
 		if(rooms[unbanObj.room].ops[socket.username] !== undefined) {
 			//Remove the user from the room ban list.
 			delete rooms[unbanObj.room].banned[unbanObj.user];
+			//io.sockets.emit('banned', banObj.room, rooms[banObj.room].banned, rooms[banObj.room].ops);
 			io.sockets.emit('updateusers', unbanObj.room, rooms[unbanObj.room].users, rooms[unbanObj.room].ops);
 			fn(true);
 		}
