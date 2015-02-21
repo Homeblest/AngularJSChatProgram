@@ -5,8 +5,8 @@
   <div class="col-md-2" id="roomList">
     <h4>Avilable rooms:</h4>
     <div class="list-group">
-        <div class="row list-group-item roomItem btn" ng-repeat="room in rooms">
-          <span ng-click="createRoom(room)">{{room}}</span>
+        <div class="row list-group-item roomItem btn" ng-repeat="room in rooms" ng-click="createRoom(room)">
+          <span>{{room}}</span>
         </div>
     </div>
   </div>
