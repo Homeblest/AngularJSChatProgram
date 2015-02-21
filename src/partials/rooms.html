@@ -45,8 +45,10 @@
               {{key}} <span ng-if="isOp(channel.name, key)">(OP)</span>
               </div>
               <div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-6 btn" ng-click="kick(channel.name, key)">Kick</div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-6 btn" ng-click="ban(channel.name, key)">Ban</div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-4 btn removePadding" ng-click="kick(channel.name, key)">Kick</div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-4 btn removePadding" ng-click="ban(channel.name, key)">Ban</div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-4 btn removePadding" ng-click="op(channel.name, key)">Op</div>
+                <div ng-if="isOp(channel.name, currentUser) && isOp(channel.name, key) && key !== currentUser" class="col-md-12 btn removePadding" ng-click="deop(channel.name, key)">Deop</div>
               </div>
             </div>
           </div>
