@@ -69,7 +69,13 @@ body {
 }
 
 .bannedUserItem {
-	background-color: rgb(77,0,0);
+	background-color: #7C6065;
+	border: 2px solid #2b3e50;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.roomItem {
 	border: 2px solid #2b3e50;
 	margin-left: 0;
 	margin-right: 0;

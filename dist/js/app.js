@@ -309,13 +309,12 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     };
 
-<<<<<<< HEAD
     $scope.leaveRoom = function(channel) {
         console.log("Leaving " + channel);
         sendLeaveMsg(channel);
         socket.emit('partroom', channel);
     };
-=======
+
     $scope.kick = function (roomName, user) {
         var data = {
             room: roomName,
@@ -362,6 +361,4 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         };
         socket.emit('sendmsg', data);
     };
-
->>>>>>> origin/master
 });

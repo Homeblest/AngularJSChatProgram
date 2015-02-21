@@ -182,6 +182,8 @@ io.sockets.on('connection', function (socket) {
 		if(rooms[kickObj.room].ops[socket.username] !== undefined) {
 			//Remove the user from the room roster.
 			delete rooms[kickObj.room].users[kickObj.user];
+			// ABA: Remove from channel in global roster. Makes window disappear
+			delete users[kickObj.user].channels[kickObj.room];
 			//Remove the user from the ops roster.
 			delete rooms[kickObj.room].ops[kickObj.user];
 			//Broadcast to the room who got kicked.
@@ -254,6 +256,7 @@ io.sockets.on('connection', function (socket) {
 		if(rooms[unbanObj.room].ops[socket.username] !== undefined) {
 			//Remove the user from the room ban list.
 			delete rooms[unbanObj.room].banned[unbanObj.user];
+			//io.sockets.emit('banned', banObj.room, rooms[banObj.room].banned, rooms[banObj.room].ops);
 			io.sockets.emit('updateusers', unbanObj.room, rooms[unbanObj.room].users, rooms[unbanObj.room].ops);
 			fn(true);
 		}
