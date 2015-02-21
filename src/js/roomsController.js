@@ -12,6 +12,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         if (!success) {
             console.log(reason);
         }else {
+            socket.emit('users');
             sendJoinMsg('lobby');
         }
     });
@@ -56,6 +57,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
                 if (!success) {
                     $scope.errorMessage = reason;
                 } else {
+                    socket.emit('users');
                     sendJoinMsg(roomName);
                 }
 
@@ -70,6 +72,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     socket.on('updateusers', function(room, users, ops) {
         // This fires the rooms event which fires the roomlist event.
         socket.emit('rooms');
+        socket.emit('users');
         if ($scope.curUserChannels[room] !== undefined) {
             $scope.curUserChannels[room].users = users;
             $scope.curUserChannels[room].ops = ops;
