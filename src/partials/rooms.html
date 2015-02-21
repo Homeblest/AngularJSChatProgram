@@ -4,11 +4,11 @@
 
   <div class="col-md-2" id="roomList">
     <h4>Avilable rooms:</h4>
-    <ul class="list-group">
-        <li class="list-group-item roomItem" ng-repeat="room in rooms">
-          <a ng-click="createRoom(room)" class="btn btn-success">{{room}}</a>
-        </li>
-    </ul>
+    <div class="list-group">
+        <div class="row list-group-item roomItem btn" ng-repeat="room in rooms">
+          <span ng-click="createRoom(room)">{{room}}</span>
+        </div>
+    </div>
   </div>
   
   <div class="col-md-10" style="overflow:auto;">
