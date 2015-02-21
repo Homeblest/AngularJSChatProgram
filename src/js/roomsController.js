@@ -4,6 +4,15 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     $scope.allUsers = [];
     //$scope.bannedUsers = {};
 
+    $scope.curUserChannels = {};
+
+    socket.emit('getUserChannels');
+
+    socket.on('getCurUserChannels', function(channels) {
+        $scope.curUserChannels = channels;
+        
+    });
+
     // Make the user join the lobby automatically
     var joinObj1 = {
         room: 'lobby'
@@ -17,13 +26,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     });
 
-    $scope.curUserChannels = {};
 
-    socket.emit('getUserChannels');
-
-    socket.on('getCurUserChannels', function(channels) {
-        $scope.curUserChannels = channels;
-    });
 
     socket.on('banned', function(room, users, username) {
         if ($scope.curUserChannels[room] !== undefined) {
@@ -73,11 +76,10 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         // This fires the rooms event which fires the roomlist event.
         socket.emit('rooms');
         socket.emit('users');
-        if ($scope.curUserChannels[room] !== undefined) {
             $scope.curUserChannels[room].users = users;
             $scope.curUserChannels[room].ops = ops;
+            $scope.curChannelUsersList = Object.keys($scope.curUserChannels[room].users);
             socket.emit('getUserChannels');
-        }
 
     });
 

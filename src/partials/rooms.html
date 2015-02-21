@@ -39,16 +39,16 @@
           </div>
 
           <div class="list-group">
-            <div class ="row list-group-item userItem" ng-repeat="(key, value) in channel.users | filter:searchUser">
+            <div class ="row list-group-item userItem" ng-repeat="user in curChannelUsersList | filter:searchUser">
               <div class="col-md-12 btn" ng-click="sendPrivateMsg(key)">
                 <span class="glyphicon glyphicon-user"></span>
-                {{key}} <span ng-if="isOp(channel.name, key)">(OP)</span>
+                {{user}} <span ng-if="isOp(channel.name, user)">(OP)</span>
               </div>
               <div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-4 btn removePadding" ng-click="kick(channel.name, key)">Kick</div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-4 btn removePadding" ng-click="ban(channel.name, key)">Ban</div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-4 btn removePadding" ng-click="op(channel.name, key)">Op</div>
-                <div ng-if="isOp(channel.name, currentUser) && isOp(channel.name, key) && key !== currentUser" class="col-md-12 btn removePadding" ng-click="deop(channel.name, key)">Deop</div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="kick(channel.name, user)">Kick</div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="ban(channel.name, user)">Ban</div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="op(channel.name, user)">Op</div>
+                <div ng-if="isOp(channel.name, currentUser) && isOp(channel.name, user) && user !== currentUser" class="col-md-12 btn removePadding" ng-click="deop(channel.name, user)">Deop</div>
               </div>
             </div>
           </div>
