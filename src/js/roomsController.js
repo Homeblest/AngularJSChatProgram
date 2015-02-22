@@ -3,36 +3,14 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     $scope.currentUser = $routeParams.user;
     $scope.allUsers = [];
     //$scope.bannedUsers = {};
-
     $scope.curUserChannels = {};
-
-    socket.emit('getUserChannels');
-
-    socket.on('getCurUserChannels', function(channels) {
-        $scope.curUserChannels = channels;
-
-    });
-
-    // Make the user join the lobby automatically
-    var joinObj1 = {
+    $scope.data = {
+        roomName: "",
+        msg: ""
+    };
+    var joinLobbyObj = {
         room: 'lobby'
     };
-    socket.emit('joinroom', joinObj1, function(success, reason) {
-        if (!success) {
-            console.log(reason);
-        } else {
-            socket.emit('users');
-            sendJoinMsg('lobby');
-        }
-    });
-
-
-
-    socket.on('banned', function(room, users, username) {
-        if ($scope.curUserChannels[room] !== undefined) {
-            $scope.curUserChannels[room].banned = users;
-        }
-    });
 
     // Get the list of all rooms
     socket.emit('rooms');
@@ -50,6 +28,44 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     });
 
+    // Make the user join the lobby automatically
+    socket.emit('joinroom', joinLobbyObj, function(success, reason) {
+        if (!success) {
+            console.log(reason);
+        } else {
+            // Update the current user channels.
+            socket.emit('getUserChannels');
+            // Announce that the user has joined the lobby
+            sendJoinMsg('lobby');
+        }
+    });
+
+    // Get all channels that current user is in.
+    socket.on('getCurUserChannels', function(channels) {
+        $scope.curUserChannels = channels;
+    });
+
+    // update the users list in the current room.
+    socket.on('updateusers', function(room, users, ops) {
+        // Update the global user roster.
+        socket.emit('users');
+    });
+
+    // Fetch the chat history for the current room.
+    socket.on('updatechat', function(roomName, history) {
+        if ($scope.curUserChannels[roomName] !== undefined) {
+            $scope.curUserChannels[roomName].messageHistory = history;
+        }
+    });
+
+    // When ban event is called, add the users to banned list.
+    socket.on('banned', function(room, users, username) {
+        if ($scope.curUserChannels[room] !== undefined) {
+            $scope.curUserChannels[room].banned = users;
+        }
+    });
+
+    // When the create room form is submitted.
     $scope.createRoom = function(roomName) {
 
         if ($scope.curUserChannels[roomName] === undefined) {
@@ -60,32 +76,15 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
                 if (!success) {
                     $scope.errorMessage = reason;
                 } else {
+                    socket.emit('rooms');
                     socket.emit('users');
                     sendJoinMsg(roomName);
                 }
-
             });
-
             socket.emit('getUserChannels');
             socket.emit('rooms');
             $scope.roomName = "";
         }
-    };
-
-    socket.on('updateusers', function(room, users, ops) {
-        // This fires the rooms event which fires the roomlist event.
-        socket.emit('rooms');
-        socket.emit('users');
-        $scope.curUserChannels[room].users = users;
-        $scope.curUserChannels[room].ops = ops;
-        $scope.curChannelUsersList = Object.keys($scope.curUserChannels[room].users);
-        socket.emit('getUserChannels');
-
-    });
-
-    $scope.data = {
-        roomName: "",
-        msg: ""
     };
 
     $scope.sendMsg = function(channel) {
@@ -96,13 +95,6 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         socket.emit('sendmsg', $scope.data);
         $scope.data.msg = "";
     };
-
-
-    socket.on('updatechat', function(roomName, history) {
-        if ($scope.curUserChannels[roomName] !== undefined) {
-            $scope.curUserChannels[roomName].messageHistory = history;
-        }
-    });
 
     var sendJoinMsg = function(roomName) {
         var data = {
@@ -216,13 +208,5 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     $scope.sendPrivateMsg = function(name) {
         console.log("sendt");
 
-    };
-});
-
-RuChat.filter('capitalize', function() {
-    return function(input, all) {
-        return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        }) : '';
     };
 });
