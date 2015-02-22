@@ -199,13 +199,12 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         roomName: "",
         msg: ""
     };
-    var joinLobbyObj = {
-        room: 'lobby'
-    };
+
 
     // Get the list of all rooms
     socket.emit('rooms');
-    // respond to emitted event from server
+
+    // respond to emitted event from server by rooms event
     socket.on('roomlist', function(list) {
         $scope.rooms = Object.keys(list);
     });
@@ -219,24 +218,21 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         }
     });
 
-    // Make the user join the lobby automatically
-    socket.emit('joinroom', joinLobbyObj, function(success, reason) {
-        if (!success) {
+    socket.emit('joinroom', {room: 'lobby'}, function(success, reason){
+        if(!success){
             console.log(reason);
-        } else {
-            // Update the current user channels.
-            socket.emit('getUserChannels');
-            // Announce that the user has joined the lobby
-            sendJoinMsg('lobby');
         }
     });
+
+    // Update the current user channels.
+    socket.emit('getUserChannels');
 
     // Get all channels that current user is in.
     socket.on('getCurUserChannels', function(channels) {
         $scope.curUserChannels = channels;
     });
 
-    // update the users list in the current room.
+    // update the users list
     socket.on('updateusers', function(room, users, ops) {
         // Update the global user roster.
         socket.emit('users');
@@ -269,13 +265,23 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
                 } else {
                     socket.emit('rooms');
                     socket.emit('users');
+                    socket.emit('getUserChannels');
                     sendJoinMsg(roomName);
+                    $scope.roomName = "";
                 }
             });
-            socket.emit('getUserChannels');
-            socket.emit('rooms');
-            $scope.roomName = "";
         }
+    };
+
+    $scope.leaveRoom = function(channel) {
+        if (Object.keys($scope.curUserChannels).length === 1) {
+            console.log("You must be in at least one room!");
+        } else {
+            sendLeaveMsg(channel);
+            socket.emit('partroom', channel);
+            socket.emit('getUserChannels');
+        }
+
     };
 
     $scope.sendMsg = function(channel) {
@@ -337,17 +343,6 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
             message: "The user " + user + " has been deopped"
         };
         sendInOutMsg(dataMessage);
-    };
-
-    $scope.leaveRoom = function(channel) {
-        if (Object.keys($scope.curUserChannels).length === 1) {
-            console.log("You must be in at least one room!");
-        } else {
-            sendLeaveMsg(channel);
-            socket.emit('partroom', channel);
-            socket.emit('getUserChannels');
-        }
-
     };
 
     $scope.kick = function(roomName, user) {

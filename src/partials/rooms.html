@@ -33,14 +33,14 @@
         </div>
 
         <div class="roomUserList col-md-2">
-
+<!--
           <div class="form-group has-feedback has-feedback-left">
             <input type="text" class="form-control" placeholder="Search user" ng-model="searchUser"/>
             <i class="glyphicon glyphicon-user form-control-feedback"></i>
           </div>
-
+-->
           <div class="list-group">
-            <div class ="row list-group-item userItem" ng-repeat="user in curChannelUsersList | filter:searchUser">
+            <div class ="row list-group-item userItem" ng-repeat="user in curUserChannels[channel.name].users">
               <div class="col-md-12 btn" ng-click="sendPrivateMsg(key)">
                 <span class="glyphicon glyphicon-user"></span>
                 {{user}} <span ng-if="isOp(channel.name, user)">(OP)</span>
