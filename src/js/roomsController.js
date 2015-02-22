@@ -154,6 +154,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         } else {
             sendLeaveMsg(channel);
             socket.emit('partroom', channel);
+            socket.emit('getUserChannels');
         }
 
     };

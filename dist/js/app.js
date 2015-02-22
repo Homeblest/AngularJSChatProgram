@@ -241,10 +241,6 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     socket.on('updateusers', function(room, users, ops) {
         // Update the global user roster.
         socket.emit('users');
-        // Update the current rooms user roster
-        //$scope.curUserChannels[room].users = users;
-        // Update the current room ops roster
-        //$scope.curUserChannels[room].ops = ops;
     });
 
     // Fetch the chat history for the current room.
@@ -350,6 +346,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         } else {
             sendLeaveMsg(channel);
             socket.emit('partroom', channel);
+            socket.emit('getUserChannels');
         }
 
     };
