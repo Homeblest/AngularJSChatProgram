@@ -11,10 +11,6 @@ RuChat.config(
                 templateUrl: 'partials/rooms.html',
                 controller: 'roomsController'
             })
-            .when('/room/:user/:room/', {
-                templateUrl: 'partials/room.html',
-                controller: 'roomController'
-            })
             .otherwise({
                 redirectTo: '/login'
             });
@@ -49,6 +45,7 @@ RuChat.factory('socket', function ($rootScope) {
         }
     };
 });
+// This filter capitalizes the first letter of each word in a sentence.
 RuChat.filter('capitalize', function() {
     return function(input, all) {
         return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
@@ -78,115 +75,141 @@ RuChat.controller('loginController', function($scope, $location, $rootScope, $ro
 });
 RuChat.controller('roomController', function($scope, $location, $rootScope, $routeParams, socket) {
 
-    $scope.currentRoom = $routeParams.room;
-    $scope.currentUser = $routeParams.user;
-    $scope.currentUsers = [];
-    $scope.bannedUsers = [];
-    $scope.errorMessage = '';
-    $scope.allMessages = [];
-    $scope.allRoomUsers = [];
-    $scope.serverMessage = '';
-    $scope.roomOps = [];
-    $scope.roomObject = {};
+    // Update the current user channels.
+    socket.emit('getUserChannels');
 
-    var roomObj = {
-        room: $scope.currentRoom
-    };
-    socket.emit('joinroom', roomObj, function(success, reason) {
-        if (!success) {
-            $scope.errorMessage = reason;
-        }
-        sendInOutMsg("Joined room");
+    // Get all channels that current user is in.
+    socket.on('getCurUserChannels', function(channels) {
+        $scope.curUserChannels = channels;
     });
 
+    // update the users list
     socket.on('updateusers', function(room, users, ops) {
-        // This fires the rooms event which fires the roomlist event.
+        socket.emit('users');
         socket.emit('rooms');
+        socket.emit('getUserChannels');
     });
 
-    // fires when leave button is clicked
-    $scope.leaveRoom = function() {
-        sendInOutMsg("Left room");
-        socket.emit('partroom', $scope.currentRoom);
-        //socket.emit('partroom', $scope.currentRoom);
-        $location.path('/rooms/' + $scope.currentUser);
+    // Fetch the chat history for the current room.
+    socket.on('updatechat', function(roomName, history) {
+        if ($scope.curUserChannels[roomName] !== undefined) {
+            $scope.curUserChannels[roomName].messageHistory = history;
+        }
+    });
+
+    // When ban event is called, add the users to banned list.
+    socket.on('banned', function(room, users, username) {
+        if ($scope.curUserChannels[room] !== undefined) {
+            $scope.curUserChannels[room].banned = users;
+        }
+    });
+
+    $scope.leaveRoom = function(channel) {
+        if (Object.keys($scope.curUserChannels).length === 1) {
+            console.log("You must be in at least one room!");
+        } else {
+            $scope.sendLeaveMsg(channel);
+            socket.emit('partroom', channel);
+            socket.emit('getUserChannels');
+        }
+
     };
 
-    // Get the user roster for the room
-    // to display all connected users in that room
-    socket.emit('rooms');
-    socket.on('roomlist', function(list) {
-        $scope.currentUsers = Object.keys(list[$scope.currentRoom].users);
-        $scope.allMessages = list[$scope.currentRoom].messageHistory;
-        $scope.roomTopic = list[$scope.currentRoom].topic;
-        $scope.roomOps = Object.keys(list[$scope.currentRoom].ops);
-        $scope.bannedUsers = Object.keys(list[$scope.currentRoom].banned);
-    });
+    $scope.sendMsg = function(channel) {
 
-    $scope.isOp = function(name) {
-        for (var i = 0; i < $scope.roomOps.length; ++i) {
-            if(name === $scope.roomOps[i]){
+        $scope.data.msg = $scope.data.msg;
+        $scope.data.roomName = channel;
+
+        socket.emit('sendmsg', $scope.data);
+        $scope.data.msg = "";
+    };
+
+    $scope.isOp = function(channel, name) {
+        var roomOps = Object.keys($scope.curUserChannels[channel].ops);
+
+        for (var i = 0; i < roomOps.length; ++i) {
+            if (name === roomOps[i]) {
                 return true;
             }
         }
     };
 
-    $scope.sendMsg = function() {
+    $scope.op = function(roomName, user) {
         var data = {
-            roomName: $scope.currentRoom,
-            msg: $scope.message
+            room: roomName,
+            user: user
         };
-        socket.emit('sendmsg', data);
-        $scope.message = "";
+        socket.emit('op', data);
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been opped"
+        };
+        $scope.sendInOutMsg(dataMessage);
     };
-    
-    $scope.kick = function (user) {
+
+    $scope.deop = function(roomName, user) {
         var data = {
-            room: $scope.currentRoom,
+            room: roomName,
+            user: user
+        };
+        socket.emit('deop', data);
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been deopped"
+        };
+        $scope.sendInOutMsg(dataMessage);
+    };
+
+    $scope.kick = function(roomName, user) {
+        var data = {
+            room: roomName,
             user: user
         };
         socket.emit('kick', data);
-        sendInOutMsg("The user " + user + " has been kicked out");
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been kicked out"
+        };
+        $scope.sendInOutMsg(dataMessage);
     };
 
-    $scope.isInUserList = function (user) {
-        for (var i = 0; i < $scope.currentUsers.length; i++) {
-            if ($scope.currentUsers[i] == user) {
-                return true;
-            }
-        }
-        return false;
-    };
-
-    $scope.ban = function (user) {
+    $scope.ban = function(roomName, user) {
         var data = {
-            room: $scope.currentRoom,
+            room: roomName,
             user: user
         };
         socket.emit('ban', data);
-        sendInOutMsg("The user " + user + " has been banned");
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been banned"
+        };
+        $scope.sendInOutMsg(dataMessage);
     };
 
-    $scope.unBan = function (user) {
+    $scope.unBan = function(roomName, user) {
         var data = {
-            room: $scope.currentRoom,
+            room: roomName,
             user: user
         };
         socket.emit('unban', data);
-        sendInOutMsg("The user " + user + " has been unbanned");
-    };
-
-    var sendInOutMsg = function(dataMessage) {
-        var data = {
-            roomName: dataMessage.roomName,
-            msg: dataMessage.message
+        var dataMessage = {
+            roomName: roomName,
+            message: "The user " + user + " has been unbanned"
         };
-        socket.emit('sendmsg', data);
+        $scope.sendInOutMsg(dataMessage);
     };
 
-    socket.on('updatechat', function (roomName, history) {
-        for (var i = 0; i < history.length; i++) {
-            $scope.allMessages[i] = history[i];
+    $scope.setTopic = function(roomName, roomTopic) {
+        var data = {
+            room: roomName,
+            topic: roomTopic
+        };
+        socket.emit('settopic', data);
+    };
+
+    socket.on('updatetopic', function(room, topic, username) {
+        if(username !== undefined) {
+           socket.emit('getUserChannels');
         }
     });
 });
@@ -222,36 +245,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         if(!success){
             console.log(reason);
         }else {
-            sendJoinMsg('lobby');
-        }
-    });
-
-    // Update the current user channels.
-    socket.emit('getUserChannels');
-
-    // Get all channels that current user is in.
-    socket.on('getCurUserChannels', function(channels) {
-        $scope.curUserChannels = channels;
-    });
-
-    // update the users list
-    socket.on('updateusers', function(room, users, ops) {
-        socket.emit('users');
-        socket.emit('rooms');
-        socket.emit('getUserChannels');
-    });
-
-    // Fetch the chat history for the current room.
-    socket.on('updatechat', function(roomName, history) {
-        if ($scope.curUserChannels[roomName] !== undefined) {
-            $scope.curUserChannels[roomName].messageHistory = history;
-        }
-    });
-
-    // When ban event is called, add the users to banned list.
-    socket.on('banned', function(room, users, username) {
-        if ($scope.curUserChannels[room] !== undefined) {
-            $scope.curUserChannels[room].banned = users;
+            $scope.sendJoinMsg('lobby');
         }
     });
 
@@ -269,34 +263,16 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
                     socket.emit('rooms');
                     socket.emit('users');
                     socket.emit('getUserChannels');
-                    sendJoinMsg(roomName);
+                    $scope.sendJoinMsg(roomName);
                     $scope.roomName = "";
                 }
             });
         }
     };
 
-    $scope.leaveRoom = function(channel) {
-        if (Object.keys($scope.curUserChannels).length === 1) {
-            console.log("You must be in at least one room!");
-        } else {
-            sendLeaveMsg(channel);
-            socket.emit('partroom', channel);
-            socket.emit('getUserChannels');
-        }
+    
 
-    };
-
-    $scope.sendMsg = function(channel) {
-
-        $scope.data.msg = $scope.data.msg;
-        $scope.data.roomName = channel;
-
-        socket.emit('sendmsg', $scope.data);
-        $scope.data.msg = "";
-    };
-
-    var sendJoinMsg = function(roomName) {
+    $scope.sendJoinMsg = function(roomName) {
         var data = {
             roomName: roomName,
             msg: "Joined Room"
@@ -304,7 +280,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         socket.emit('sendmsg', data);
     };
 
-    var sendLeaveMsg = function(roomName) {
+    $scope.sendLeaveMsg = function(roomName) {
         var data = {
             roomName: roomName,
             msg: "Left Room"
@@ -312,82 +288,9 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         socket.emit('sendmsg', data);
     };
 
-    $scope.isOp = function(channel, name) {
-        var roomOps = Object.keys($scope.curUserChannels[channel].ops);
+    
 
-        for (var i = 0; i < roomOps.length; ++i) {
-            if (name === roomOps[i]) {
-                return true;
-            }
-        }
-    };
-
-    $scope.op = function(roomName, user) {
-        var data = {
-            room: roomName,
-            user: user
-        };
-        socket.emit('op', data);
-        var dataMessage = {
-            roomName: roomName,
-            message: "The user " + user + " has been opped"
-        };
-        sendInOutMsg(dataMessage);
-    };
-
-    $scope.deop = function(roomName, user) {
-        var data = {
-            room: roomName,
-            user: user
-        };
-        socket.emit('deop', data);
-        var dataMessage = {
-            roomName: roomName,
-            message: "The user " + user + " has been deopped"
-        };
-        sendInOutMsg(dataMessage);
-    };
-
-    $scope.kick = function(roomName, user) {
-        var data = {
-            room: roomName,
-            user: user
-        };
-        socket.emit('kick', data);
-        var dataMessage = {
-            roomName: roomName,
-            message: "The user " + user + " has been kicked out"
-        };
-        sendInOutMsg(dataMessage);
-    };
-
-    $scope.ban = function(roomName, user) {
-        var data = {
-            room: roomName,
-            user: user
-        };
-        socket.emit('ban', data);
-        var dataMessage = {
-            roomName: roomName,
-            message: "The user " + user + " has been banned"
-        };
-        sendInOutMsg(dataMessage);
-    };
-
-    $scope.unBan = function(roomName, user) {
-        var data = {
-            room: roomName,
-            user: user
-        };
-        socket.emit('unban', data);
-        var dataMessage = {
-            roomName: roomName,
-            message: "The user " + user + " has been unbanned"
-        };
-        sendInOutMsg(dataMessage);
-    };
-
-    var sendInOutMsg = function(dataMessage) {
+    $scope.sendInOutMsg = function(dataMessage) {
         var data = {
             roomName: dataMessage.roomName,
             msg: dataMessage.message
@@ -395,19 +298,7 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
         socket.emit('sendmsg', data);
     };
 
-    $scope.setTopic = function(roomName, roomTopic) {
-        var data = {
-            room: roomName,
-            topic: roomTopic
-        };
-        socket.emit('settopic', data);
-    };
-
-    socket.on('updatetopic', function(room, topic, username) {
-        if(username !== undefined) {
-           socket.emit('getUserChannels');
-        }
-    });
+    
 
     $scope.sendPrivateMsg = function(name) {
         console.log("sendt");

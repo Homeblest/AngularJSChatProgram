@@ -1,4 +1,5 @@
 <h1>Hi {{currentUser}}!</h1>
+
 <div class="row">
 
   <div class="col-md-2" id="roomList">
@@ -10,7 +11,7 @@
     </div>
   </div>
   
-  <div class="col-md-10" style="overflow:auto;">
+  <div class="col-md-10" style="overflow:auto;" ng-controller="roomController">
 
     <tabset justified="true">
       <tab ng-repeat="channel in curUserChannels">

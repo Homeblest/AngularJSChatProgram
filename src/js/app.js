@@ -9,11 +9,7 @@ RuChat.config(
             })
             .when('/rooms/:user', {
                 templateUrl: 'partials/rooms.html',
-                controller: 'roomsController'
-            })
-            .when('/room/:user/:room/', {
-                templateUrl: 'partials/room.html',
-                controller: 'roomController'
+                controller: 'MainController'
             })
             .otherwise({
                 redirectTo: '/login'
