@@ -1,5 +1,4 @@
 <h1>Hi {{currentUser}}!</h1>
-
 <div class="row">
 
   <div class="col-md-2" id="roomList">
@@ -16,19 +15,21 @@
     <tabset justified="true">
       <tab ng-repeat="channel in curUserChannels">
         <tab-heading>
-          {{channel.name}}
+          {{channel.name}} - 
+          <span ng-if="isOp(channel.name, currentUser)" class="left-inner-addon">
+            <i class="glyphicon glyphicon-pencil"></i><input class="topicBox" ng-model="channel.topic" value="{{channel.topic}}" ng-blur="setTopic(channel.name, channel.topic)"></input>
+          </span>
+          <span ng-if="!isOp(channel.name, currentUser)">{{channel.topic}}</span>
           <a ng-click="leaveRoom(channel.name)"href=''><i class="glyphicon glyphicon-remove" style="float:right;"></i></a>
         </tab-heading>
         <div id="chatWindow" class="col-md-10" scroll-glue>
           <ul>
-            <li>Topic: {{channel.topic}}</li>
+            <li class="topic">Topic: {{channel.topic}}</li>
           </ul>
-          <ul ng-repeat="msg in channel.messageHistory">
-            <li class="userMsg">
+          <div ng-repeat="msg in channel.messageHistory" class="userMsg">
               {{msg.nick}}:  {{msg.message}}
               <span class="msgTime">{{msg.timestamp | date:'HH:mm'}}</span>
-            </li>
-          </ul>
+          </div>
         </div>
 
         <div class="roomUserList col-md-2">

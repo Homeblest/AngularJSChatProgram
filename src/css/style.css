@@ -25,6 +25,7 @@ body {
 	color: black;
 	overflow: auto;
 	height: 500px;
+	padding: 0px;
 }
 #chatForm {
 	width: 100%;
@@ -38,6 +39,14 @@ body {
 	width: 76.8%;
 	float: left;
 }
+.topic {
+	background-color: #A5ACB3;
+	padding: 10px 10px;
+	margin: 0px 10px;
+	border-bottom: 3px solid rgb(43, 62, 80);
+	border-left: 3px solid rgb(43, 62, 80);
+	border-right: 3px solid rgb(43, 62, 80);
+}
 #chatInput {
 	border: 0;
 	padding: 9px;
@@ -45,18 +54,18 @@ body {
 	width: 100%;
 }
 .userMsg {
-	padding: 5px 10px;
+	padding: 10px;
+	margin: 0px 10px;
+	border-bottom: 1px solid black;
 }
 .userMsg:nth-child(odd) { 
 	background: #eee;
-	border: 1px solid black;
 }
 
 #chatWindow ul {
 	list-style-type: none; 
 	margin: 0; 
 	padding: 0;
-
 }
 .msgTime {
 	float:right;
@@ -83,4 +92,22 @@ body {
 
 .removePadding {
 	padding: 0;
+}
+
+.topicBox {
+	background-color: #2b3e50;
+	border: 0;
+	color: inherit;
+}
+
+.left-inner-addon {
+    position: relative;
+}
+.left-inner-addon input {
+    padding-left: 30px;
+}
+.left-inner-addon i {
+    position: absolute;
+    padding-left: 10px;
+    pointer-events: none;
 }
