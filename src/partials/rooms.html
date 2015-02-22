@@ -5,7 +5,7 @@
     <h4>Avilable rooms:</h4>
     <div class="list-group">
         <div class="row list-group-item roomItem btn" ng-repeat="room in rooms" ng-click="createRoom(room)">
-          <span>{{room}}</span>
+          <span>{{room | capitalize}}</span>
         </div>
     </div>
   </div>
@@ -15,9 +15,9 @@
     <tabset justified="true">
       <tab ng-repeat="channel in curUserChannels">
         <tab-heading>
-          {{channel.name}} - 
+          {{channel.name | capitalize}} - 
           <span ng-if="isOp(channel.name, currentUser)" class="left-inner-addon">
-            <i class="glyphicon glyphicon-pencil"></i><input class="topicBox" ng-model="channel.topic" value="{{channel.topic}}" ng-blur="setTopic(channel.name, channel.topic)"></input>
+            <i class="glyphicon glyphicon-pencil"></i><input class="topicBox" ng-model="channel.topic" value="{{channel.topic}}" ng-change="setTopic(channel.name, channel.topic)"></input>
           </span>
           <span ng-if="!isOp(channel.name, currentUser)">{{channel.topic}}</span>
           <a ng-click="leaveRoom(channel.name)"href=''><i class="glyphicon glyphicon-remove" style="float:right;"></i></a>
@@ -35,21 +35,21 @@
         <div class="roomUserList col-md-2">
 
           <div class="form-group has-feedback has-feedback-left">
-            <input type="text" class="form-control" placeholder="Search user" ng-model="searchUser" />
+            <input type="text" class="form-control" placeholder="Search user" ng-model="searchUser"/>
             <i class="glyphicon glyphicon-user form-control-feedback"></i>
           </div>
 
           <div class="list-group">
-            <div class ="row list-group-item userItem" ng-repeat="(key, value) in channel.users | filter:searchUser">
-              <div class="col-md-12 btn">
+            <div class ="row list-group-item userItem" ng-repeat="user in curChannelUsersList | filter:searchUser">
+              <div class="col-md-12 btn" ng-click="sendPrivateMsg(key)">
                 <span class="glyphicon glyphicon-user"></span>
-              {{key}} <span ng-if="isOp(channel.name, key)">(OP)</span>
+                {{user}} <span ng-if="isOp(channel.name, user)">(OP)</span>
               </div>
               <div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-4 btn removePadding" ng-click="kick(channel.name, key)">Kick</div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-4 btn removePadding" ng-click="ban(channel.name, key)">Ban</div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-4 btn removePadding" ng-click="op(channel.name, key)">Op</div>
-                <div ng-if="isOp(channel.name, currentUser) && isOp(channel.name, key) && key !== currentUser" class="col-md-12 btn removePadding" ng-click="deop(channel.name, key)">Deop</div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="kick(channel.name, user)">Kick</div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="ban(channel.name, user)">Ban</div>
+                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="op(channel.name, user)">Op</div>
+                <div ng-if="isOp(channel.name, currentUser) && isOp(channel.name, user) && user !== currentUser" class="col-md-12 btn removePadding" ng-click="deop(channel.name, user)">Deop</div>
               </div>
             </div>
           </div>

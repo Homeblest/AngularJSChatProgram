@@ -282,9 +282,10 @@ io.sockets.on('connection', function (socket) {
 
 	// Get all room object from user
 	socket.on('getUserChannels', function(){
-		var curUserChannels = users[socket.username].channels;
-
-		socket.emit('getCurUserChannels', curUserChannels);
+		if (socket.username !== undefined) {
+			var curUserChannels = users[socket.username].channels;
+			socket.emit('getCurUserChannels', curUserChannels);
+		}
 	});
 
 	//Sets topic for room.
