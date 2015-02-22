@@ -29,6 +29,8 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
     socket.emit('joinroom', {room: 'lobby'}, function(success, reason){
         if(!success){
             console.log(reason);
+        }else {
+            sendJoinMsg('lobby');
         }
     });
 
@@ -42,8 +44,9 @@ RuChat.controller('roomsController', function($scope, $location, $rootScope, $ro
 
     // update the users list
     socket.on('updateusers', function(room, users, ops) {
-        // Update the global user roster.
         socket.emit('users');
+        socket.emit('rooms');
+        socket.emit('getUserChannels');
     });
 
     // Fetch the chat history for the current room.
