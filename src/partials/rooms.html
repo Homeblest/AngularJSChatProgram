@@ -41,8 +41,8 @@
           </div>
 -->
           <div class="list-group">
-            <div class ="row list-group-item userItem" ng-repeat="user in curUserChannels[channel.name].users">
-              <div class="col-md-12 btn" ng-click="sendPrivateMsg(key)">
+            <div class ="row list-group-item userItem" ng-repeat="user in channel.users">
+              <div class="col-md-12 btn" ng-dblclick="sendPrivateMsg(user)">
                 <span class="glyphicon glyphicon-user"></span>
                 {{user}} <span ng-if="isOp(channel.name, user)">(OP)</span>
               </div>

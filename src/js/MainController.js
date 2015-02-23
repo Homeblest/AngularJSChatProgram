@@ -3,6 +3,7 @@ RuChat.controller('MainController', function($scope, $location, $rootScope, $rou
     $scope.currentUser = $routeParams.user;
     $scope.allUsers = [];
     $scope.curUserChannels = {};
+    $scope.rooms = [];
 
     $scope.data = {
         roomName: "",
@@ -14,7 +15,16 @@ RuChat.controller('MainController', function($scope, $location, $rootScope, $rou
 
     // respond to emitted event from server by rooms event
     socket.on('roomlist', function(list) {
-        $scope.rooms = Object.keys(list);
+        var i = 0;
+        for(var room in list){
+            if(!list.hasOwnProperty(room)){
+                continue;
+            }
+            if(list[room].isPrivate === false){
+                $scope.rooms[i] = list[room].name;
+                i++;
+            }
+        }
     });
 
     // Get the list of all connected users
@@ -28,7 +38,7 @@ RuChat.controller('MainController', function($scope, $location, $rootScope, $rou
     });
 
     // Forces every user to join the lobby when they connect.
-    socket.emit('joinroom', {room: 'lobby'}, function(success, reason){
+    socket.emit('joinroom', {room: 'lobby', priv: false}, function(success, reason){
         if(!success){
             console.log(reason);
         }else {
@@ -41,7 +51,8 @@ RuChat.controller('MainController', function($scope, $location, $rootScope, $rou
 
         if ($scope.curUserChannels[roomName] === undefined) {
             var joinObj = {
-                room: roomName
+                room: roomName,
+                priv: false
             };
             socket.emit('joinroom', joinObj, function(success, reason) {
                 if (!success) {
@@ -79,10 +90,5 @@ RuChat.controller('MainController', function($scope, $location, $rootScope, $rou
             msg: dataMessage.message
         };
         socket.emit('sendmsg', data);
-    };
-
-    $scope.sendPrivateMsg = function(name) {
-        console.log("sendt");
-
     };
 });
