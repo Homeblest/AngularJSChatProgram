@@ -71,6 +71,14 @@ RuChat.controller('MainController', function($scope, $location, $rootScope, $rou
         msg: ""
     };
 
+    // Update the current user channels.
+    socket.emit('getUserChannels');
+
+    // Get all channels that current user is in.
+    socket.on('getCurUserChannels', function(channels) {
+        $scope.curUserChannels = channels;
+    });
+
     // Get the list of all rooms
     socket.emit('rooms');
 
@@ -111,6 +119,7 @@ RuChat.controller('MainController', function($scope, $location, $rootScope, $rou
     // or creates a new room.
     $scope.createRoom = function(roomName) {
         // join the room only if he isnt already in it
+        console.log($scope.curUserChannels);
         if ($scope.curUserChannels[roomName] === undefined) {
             var joinObj = {
                 room: roomName,
@@ -156,14 +165,6 @@ RuChat.controller('MainController', function($scope, $location, $rootScope, $rou
 });
 RuChat.controller('roomController', function($scope, $location, $rootScope, $routeParams, socket) {
 
-    // Update the current user channels.
-    socket.emit('getUserChannels');
-
-    // Get all channels that current user is in.
-    socket.on('getCurUserChannels', function(channels) {
-        $scope.curUserChannels = channels;
-    });
-
     // update the users list
     socket.on('updateusers', function(room, users, ops) {
         socket.emit('users');
@@ -179,7 +180,6 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
             socket.emit('partroom', channel);
             socket.emit('getUserChannels');
         }
-
     };
 
     $scope.sendMsg = function(channel) {

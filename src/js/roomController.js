@@ -1,13 +1,5 @@
 RuChat.controller('roomController', function($scope, $location, $rootScope, $routeParams, socket) {
 
-    // Update the current user channels.
-    socket.emit('getUserChannels');
-
-    // Get all channels that current user is in.
-    socket.on('getCurUserChannels', function(channels) {
-        $scope.curUserChannels = channels;
-    });
-
     // update the users list
     socket.on('updateusers', function(room, users, ops) {
         socket.emit('users');
@@ -23,7 +15,6 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
             socket.emit('partroom', channel);
             socket.emit('getUserChannels');
         }
-
     };
 
     $scope.sendMsg = function(channel) {
