@@ -141,6 +141,10 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     // Opens up a new tab with the current user and the recipient, tab will not be visible to other users.
     $scope.sendPrivateMsg = function(name) {
 
+        if(name === $scope.currentUser){
+            return;
+        }
+
         socket.emit('joinroom', {room: name + ' + ' + $scope.currentUser, priv: true}, function(success, reason) {
             if (!success) {
                 console.log(reason);
