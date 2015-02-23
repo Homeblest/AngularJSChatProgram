@@ -16,12 +16,6 @@ RuChat.config(
             });
     }
 );
-
-
-
-
-
-
 RuChat.factory('socket', function ($rootScope) {
     var socket = io.connect('http://localhost:8080');
     return {
@@ -43,14 +37,6 @@ RuChat.factory('socket', function ($rootScope) {
                 });
             });
         }
-    };
-});
-// This filter capitalizes the first letter of each word in a sentence.
-RuChat.filter('capitalize', function() {
-    return function(input, all) {
-        return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        }) : '';
     };
 });
 RuChat.controller('loginController', function($scope, $location, $rootScope, $routeParams, socket) {
@@ -310,6 +296,10 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     // Opens up a new tab with the current user and the recipient, tab will not be visible to other users.
     $scope.sendPrivateMsg = function(name) {
 
+        if(name === $scope.currentUser){
+            return;
+        }
+
         socket.emit('joinroom', {room: name + ' + ' + $scope.currentUser, priv: true}, function(success, reason) {
             if (!success) {
                 console.log(reason);
@@ -334,4 +324,12 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
             }
         });
     });
+});
+// This filter capitalizes the first letter of each word in a sentence.
+RuChat.filter('capitalize', function() {
+    return function(input, all) {
+        return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }) : '';
+    };
 });
