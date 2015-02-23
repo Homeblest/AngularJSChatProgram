@@ -121,3 +121,10 @@ body {
     -moz-column-count:5;
     list-style-type: none;
 }
+.createRoomFormGroup{
+	width: 20%;
+	margin-top: -20px;
+}
+#roomName{
+	width: 100%;
+}
