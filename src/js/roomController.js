@@ -141,31 +141,48 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
     // Opens up a new tab with the current user and the recipient, tab will not be visible to other users.
     $scope.sendPrivateMsg = function(name) {
 
-        if(name === $scope.currentUser){
+        if (name === $scope.currentUser) {
             return;
         }
 
-        socket.emit('joinroom', {room: name + ' + ' + $scope.currentUser, priv: true}, function(success, reason) {
+        socket.emit('joinroom', {
+            room: name + ' + ' + $scope.currentUser,
+            priv: true
+        }, function(success, reason) {
             if (!success) {
                 console.log(reason);
             } else {
                 var msgObj = {
                     nick: name,
-                    room: name + ' ' + $scope.currentUser
+                    room: name + ' + ' + $scope.currentUser
                 };
                 socket.emit('privatemsg', msgObj, function(success) {
                     if (!success) {
                         console.log('privatemsg error');
+
+                    } else {
+                        socket.emit('rooms');
+                        socket.emit('users');
+                        socket.emit('getUserChannels');
+                        $scope.sendJoinMsg(name + ' + ' + $scope.currentUser);
                     }
                 });
             }
         });
     };
 
-    socket.on('recv_privatemsg', function(fromName, roomName){
-        socket.emit('joinroom', {room: roomName, priv: true}, function(success, reason){
-            if(!success){
+    socket.on('recv_privatemsg', function(fromName, roomName) {
+        socket.emit('joinroom', {
+            room: roomName,
+            priv: true
+        }, function(success, reason) {
+            if (!success) {
                 console.log(reason);
+            } else {
+                socket.emit('rooms');
+                socket.emit('users');
+                socket.emit('getUserChannels');
+                $scope.sendJoinMsg(roomName);
             }
         });
     });
