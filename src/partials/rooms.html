@@ -1,5 +1,5 @@
 <div class="row">
-  
+
   <div class="col-md-12">
     <h1>Hi {{currentUser}}!</h1>
   </div>
@@ -29,7 +29,7 @@
                   <i class="glyphicon glyphicon-pencil"></i><input class="topicBox" ng-model="channel.topic" value="{{channel.topic}}" ng-change="setTopic(channel.name, channel.topic)"></input>
                   </span>
                   <span ng-if="!isOp(channel.name, currentUser)">{{channel.topic}}</span>
-                  <a ng-click="leaveRoom(channel.name)"href=''><i class="glyphicon glyphicon-remove" style="float:right;"></i></a>
+                  <a ng-click="leaveRoom(channel.name)"href=''><i class="glyphicon glyphicon-remove"></i></a>
                 </tab-heading>
 
                 <div id="chatWindow" class="col-md-10" scroll-glue>
@@ -51,7 +51,7 @@
                 -->
                 <div class="list-group">
                   <div class ="list-group-item userItem" ng-repeat="user in channel.users">
-                    <div class="btn btn-default" ng-dblclick="sendPrivateMsg(user)">
+                    <div class="btn btn-default userInRoom" ng-dblclick="sendPrivateMsg(user)">
                       <span class="glyphicon glyphicon-user"></span>
                       {{user}} <span ng-if="isOp(channel.name, user)">(OP)</span>
                     </div>
@@ -107,7 +107,7 @@
 
 <div class="row createRoomRow">
 
-    <div class="col-md-8 col-md-offset-2">
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4>You can also create your own room!</h4>

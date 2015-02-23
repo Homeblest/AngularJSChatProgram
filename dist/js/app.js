@@ -107,9 +107,10 @@ RuChat.controller('MainController', function($scope, $location, $rootScope, $rou
         }
     });
 
-    // When the create room form is submitted.
+    // When the user clicks on an available room
+    // or creates a new room.
     $scope.createRoom = function(roomName) {
-
+        // join the room only if he isnt already in it
         if ($scope.curUserChannels[roomName] === undefined) {
             var joinObj = {
                 room: roomName,
