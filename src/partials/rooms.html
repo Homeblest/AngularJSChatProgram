@@ -1,121 +1,136 @@
-<h1>Hi {{currentUser}}!</h1>
+<div class="row">
+  
+  <div class="col-md-12">
+    <h1>Hi {{currentUser}}!</h1>
+  </div>
+  
+</div>
 
 <div class="row">
-
+  
   <div class="col-md-2" id="roomList">
     <h4>Avilable rooms:</h4>
     <div class="list-group">
-        <div class="row list-group-item roomItem btn" ng-repeat="room in rooms" ng-click="createRoom(room)">
-          <span>{{room | capitalize}}</span>
-        </div>
+      <div class="row list-group-item roomItem btn" ng-repeat="room in rooms" ng-click="createRoom(room)">
+        <span>{{room | capitalize}}</span>
+      </div>
+    </div>
+  </div>
+    
+    <div class="col-md-10" style="overflow:auto;" ng-controller="roomController">
+      
+      <tabset justified="true">
+        <tab ng-repeat="channel in curUserChannels" >
+        
+          <tab-heading>
+            {{channel.name | capitalize}} -
+            <span ng-if="isOp(channel.name, currentUser)" class="left-inner-addon">
+            <i class="glyphicon glyphicon-pencil"></i><input class="topicBox" ng-model="channel.topic" value="{{channel.topic}}" ng-change="setTopic(channel.name, channel.topic)"></input>
+            </span>
+            <span ng-if="!isOp(channel.name, currentUser)">{{channel.topic}}</span>
+            <a ng-click="leaveRoom(channel.name)"href=''><i class="glyphicon glyphicon-remove" style="float:right;"></i></a>
+          </tab-heading>
+          
+          <div id="chatWindow" class="col-md-10" scroll-glue>
+            <ul>
+              <li class="topic">Topic: {{channel.topic}}</li>
+            </ul>
+            <div ng-repeat="msg in channel.messageHistory" class="userMsg">
+              {{msg.nick}}:  {{msg.message}}
+              <span class="msgTime">{{msg.timestamp | date:'HH:mm'}}</span>
+            </div>
+          </div>
+          
+          <div class="roomUserList col-md-2">
+            <!--
+            <div class="form-group has-feedback has-feedback-left">
+              <input type="text" class="form-control" placeholder="Search user" ng-model="searchUser"/>
+              <i class="glyphicon glyphicon-user form-control-feedback"></i>
+            </div>
+            -->
+            <div class="list-group">
+              <div class ="row list-group-item userItem" ng-repeat="user in channel.users">
+                <div class="col-md-12 btn" ng-dblclick="sendPrivateMsg(user)">
+                  <span class="glyphicon glyphicon-user"></span>
+                  {{user}} <span ng-if="isOp(channel.name, user)">(OP)</span>
+                </div>
+                <div>
+                  <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="kick(channel.name, user)">Kick</div>
+                  <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="ban(channel.name, user)">Ban</div>
+                  <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="op(channel.name, user)">Op</div>
+                  <div ng-if="isOp(channel.name, currentUser) && isOp(channel.name, user) && user !== currentUser" class="col-md-12 btn removePadding" ng-click="deop(channel.name, user)">Deop</div>
+                </div>
+              </div>
+            </div>
+            
+            <div ng-if="isOp(channel.name, currentUser)" class="list-group">
+              <span>Banned users:</span>
+              <div class ="row list-group-item bannedUserItem" ng-repeat="(key, value) in channel.banned | filter:searchUser">
+                <div class="col-md-12 btn">
+                  <span class="glyphicon glyphicon-user"></span>
+                  {{key}}
+                </div>
+                <div>
+                  <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-12 btn" ng-click="unBan(channel.name, key)">Unban</div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          
+          <div class="row">
+            
+            <div class="col-md-12">
+              
+              <form accept-charset="UTF-8" class="form-inline" id="chatForm" name="myForm">
+                <fieldset>
+                  <div class="form-group" id="divFormGroup">
+                    <input type="text" id="chatInput" autocomplete="off" ng-model="data.msg" autofocus>
+                  </div>
+                  <input class="btn btn-primary chatButton" type="submit" value="Send" ng-click="sendMsg(channel.name)"></input>
+                </fieldset>
+              </form>
+              
+            </div>
+          </div>
+        
+        </tab>
+      </tabset>
+
     </div>
   </div>
   
-  <div class="col-md-10" style="overflow:auto;" ng-controller="roomController">
-
-    <tabset justified="true">
-      <tab ng-repeat="channel in curUserChannels">
-        <tab-heading>
-          {{channel.name | capitalize}} - 
-          <span ng-if="isOp(channel.name, currentUser)" class="left-inner-addon">
-            <i class="glyphicon glyphicon-pencil"></i><input class="topicBox" ng-model="channel.topic" value="{{channel.topic}}" ng-change="setTopic(channel.name, channel.topic)"></input>
-          </span>
-          <span ng-if="!isOp(channel.name, currentUser)">{{channel.topic}}</span>
-          <a ng-click="leaveRoom(channel.name)"href=''><i class="glyphicon glyphicon-remove" style="float:right;"></i></a>
-        </tab-heading>
-        <div id="chatWindow" class="col-md-10" scroll-glue>
-          <ul>
-            <li class="topic">Topic: {{channel.topic}}</li>
-          </ul>
-          <div ng-repeat="msg in channel.messageHistory" class="userMsg">
-              {{msg.nick}}:  {{msg.message}}
-              <span class="msgTime">{{msg.timestamp | date:'HH:mm'}}</span>
-          </div>
-        </div>
-
-        <div class="roomUserList col-md-2">
-<!--
-          <div class="form-group has-feedback has-feedback-left">
-            <input type="text" class="form-control" placeholder="Search user" ng-model="searchUser"/>
-            <i class="glyphicon glyphicon-user form-control-feedback"></i>
-          </div>
--->
-          <div class="list-group">
-            <div class ="row list-group-item userItem" ng-repeat="user in channel.users">
-              <div class="col-md-12 btn" ng-dblclick="sendPrivateMsg(user)">
-                <span class="glyphicon glyphicon-user"></span>
-                {{user}} <span ng-if="isOp(channel.name, user)">(OP)</span>
-              </div>
-              <div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="kick(channel.name, user)">Kick</div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="ban(channel.name, user)">Ban</div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, user)" class="col-md-4 btn removePadding" ng-click="op(channel.name, user)">Op</div>
-                <div ng-if="isOp(channel.name, currentUser) && isOp(channel.name, user) && user !== currentUser" class="col-md-12 btn removePadding" ng-click="deop(channel.name, user)">Deop</div>
-              </div>
-            </div>
-          </div>
-
-          <div ng-if="isOp(channel.name, currentUser)" class="list-group">
-            <span>Banned users:</span>
-            <div class ="row list-group-item bannedUserItem" ng-repeat="(key, value) in channel.banned | filter:searchUser">
-              <div class="col-md-12 btn">
-                <span class="glyphicon glyphicon-user"></span>
-                {{key}}
-              </div>
-              <div>
-                <div ng-if="isOp(channel.name, currentUser) && !isOp(channel.name, key)" class="col-md-12 btn" ng-click="unBan(channel.name, key)">Unban</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      
-
-        <div class="row">
-
-          <div class="col-md-12">
-            
-            <form accept-charset="UTF-8" class="form-inline" id="chatForm" name="myForm">
-              <fieldset>
-                <div class="form-group" id="divFormGroup">
-                  <input type="text" id="chatInput" autocomplete="off" ng-model="data.msg" autofocus>
-                </div>
-                <input class="btn btn-primary chatButton" type="submit" value="Send" ng-click="sendMsg(channel.name)"></input>
-              </fieldset>
-            </form>
-
-          </div>
-        </div>
-      </tab>
-    </tabset>
-  </div>
-
-</div>
-
-
-
-<div class="panel panel-default">
   
-  <div class="panel-heading">
-    <h4>You can also create your own room!</h4>
-  </div>
-  
-  <div class="panel-body">
-    <form class="form-inline" name="createRoomForm" ng-submit="createRoom(roomName)">
-      <div class="form-group">
-        <label for="roomName"></label>
-        <input type="text" name="nameOfRoom" required class="form-control" id="roomName" placeholder="What's the name of your room?" ng-model="roomName">
+  <div class="row createRoomRow">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>You can also create your own room!</h4>
+        </div>
+        
+        <div class="panel-body">
+          <form class="form-inline" name="createRoomForm" ng-submit="createRoom(roomName)">
+            <div class="form-group">
+              <label for="roomName"></label>
+              <input type="text" name="nameOfRoom" required class="form-control" id="roomName" placeholder="What's the name of your room?" ng-model="roomName">
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+          </form>
+        </div>
+        
       </div>
-      <button type="submit" class="btn btn-primary">Create</button>
-    </form>
+    </div>
   </div>
   
-</div>
-
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h4>Connected users:</h4>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>Connected users:</h4>
+        </div>
+        <ul class="panel-body allUsersList">
+          <li ng-repeat="user in allUsers">{{user}}</li>
+        </ul>
+      </div>
+    </div>
   </div>
-  <div class="panel-body" ng-repeat="user in allUsers">
-    <span>{{user}}</span>
-  </div>
-</div>

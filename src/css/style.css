@@ -112,3 +112,12 @@ body {
     padding-left: 10px;
     pointer-events: none;
 }
+.createRoomRow {
+	margin-top: 1%;
+}
+.allUsersList {
+	column-count:5;
+    -webkit-column-count:5;
+    -moz-column-count:5;
+    list-style-type: none;
+}
