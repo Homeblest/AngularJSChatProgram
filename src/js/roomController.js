@@ -83,21 +83,13 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
             room: roomName,
             user: user
         };
-        // socket.emit('kick', data);
-        // var dataMessage = {
-        //     roomName: roomName,
-        //     message: "The user " + user + " has been kicked out"
-        // };
-        // $scope.sendInOutMsg(dataMessage);
-    };
-
-    socket.on('kicked', function(room, user, username) {
+        socket.emit('kick', data);
         var dataMessage = {
             roomName: roomName,
             message: "The user " + user + " has been kicked out"
         };
         $scope.sendInOutMsg(dataMessage);
-    }
+    };
 
     $scope.ban = function(roomName, user) {
         var data = {
@@ -152,7 +144,6 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         if (name === $scope.currentUser) {
             return;
         }
-
         socket.emit('joinroom', {
             room: name + ' + ' + $scope.currentUser,
             priv: true
@@ -166,8 +157,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
                 };
                 socket.emit('privatemsg', msgObj, function(success) {
                     if (!success) {
-                        console.log('privatemsg error');
-
+                        console.log('privatemsg error');                    
                     } else {
                         socket.emit('rooms');
                         socket.emit('users');

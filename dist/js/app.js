@@ -299,7 +299,6 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
         if (name === $scope.currentUser) {
             return;
         }
-
         socket.emit('joinroom', {
             room: name + ' + ' + $scope.currentUser,
             priv: true
@@ -313,8 +312,7 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
                 };
                 socket.emit('privatemsg', msgObj, function(success) {
                     if (!success) {
-                        console.log('privatemsg error');
-
+                        console.log('privatemsg error');                    
                     } else {
                         socket.emit('rooms');
                         socket.emit('users');
