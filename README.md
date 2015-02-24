@@ -22,13 +22,13 @@ $ gulp js
 ```
 * This runs jshint on all the javascript files, concats, and minifies them into dist/js/app.js.
 
-Second Tab:
+##Second Tab:
 ```sh
 $ python -m SimpleHTTPServer 8000
 ```
 * This runs a simple server that out application can run on
 
-Third Tab:
+##Third Tab:
 ```sh
 $ node chatserver
 ```
