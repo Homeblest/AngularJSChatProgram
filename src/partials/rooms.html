@@ -50,7 +50,7 @@
                 </div>
                 -->
                 <div class="list-group">
-                  <div class ="list-group-item userItem" ng-repeat="user in channel.users">
+                  <div class ="row list-group-item userItem" ng-repeat="user in channel.users">
                     <div class="btn btn-default userInRoom" ng-dblclick="sendPrivateMsg(user)">
                       <span class="glyphicon glyphicon-user"></span>
                       {{user}} <span ng-if="isOp(channel.name, user)">(OP)</span>
