@@ -5,6 +5,7 @@ Make sure you have the following installed on your system:
 * Node
 * Python
 * Bower
+* NPM
 
 Open your favorite Terminal and run these commands.
 
