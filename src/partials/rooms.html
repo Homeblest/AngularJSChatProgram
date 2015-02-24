@@ -11,7 +11,7 @@
   <div class="col-md-2" id="roomList">
     <h4>Avilable rooms:</h4>
     <div class="list-group">
-      <div class="row list-group-item roomItem btn" ng-repeat="room in rooms" ng-click="createRoom(room)">
+      <div class="row list-group-item roomItem btn" ng-repeat="room in rooms" ng-dblclick="createRoom(room)" tooltip-placement="bottom" tooltip="Double click to join this room!">
         <span>{{room | capitalize}}</span>
       </div>
     </div>
@@ -26,7 +26,7 @@
                 <tab-heading>
                   {{channel.name | capitalize}} -
                   <span ng-if="isOp(channel.name, currentUser)" class="left-inner-addon">
-                  <i class="glyphicon glyphicon-pencil"></i><input class="topicBox" ng-model="channel.topic" value="{{channel.topic}}" ng-change="setTopic(channel.name, channel.topic)"></input>
+                  <i class="glyphicon glyphicon-pencil"></i><input class="topicBox" ng-model="channel.topic" value="{{channel.topic}}" ng-change="setTopic(channel.name, channel.topic)" tooltip-placement="bottom" tooltip="Click here to change topic!"></input>
                   </span>
                   <span ng-if="!isOp(channel.name, currentUser)">{{channel.topic}}</span>
                   <a ng-click="leaveRoom(channel.name)"href=''><i class="glyphicon glyphicon-remove"></i></a>
@@ -51,7 +51,7 @@
                 -->
                 <div class="list-group">
                   <div class ="row list-group-item userItem" ng-repeat="user in channel.users">
-                    <div class="btn btn-default userInRoom" ng-dblclick="sendPrivateMsg(user)">
+                    <div class="btn btn-default userInRoom" ng-dblclick="sendPrivateMsg(user)" tooltip-placement="bottom" tooltip="Double click to send private message!">
                       <span class="glyphicon glyphicon-user"></span>
                       {{user}} <span ng-if="isOp(channel.name, user)">(OP)</span>
                     </div>
