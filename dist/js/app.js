@@ -1,6 +1,372 @@
-var RuChat=angular.module("RuChat",["ngRoute","luegg.directives","ui.bootstrap"]);RuChat.config(["$routeProvider",function(o){o.when("/login",{templateUrl:"partials/login.html",controller:"loginController"}).when("/rooms/:user",{templateUrl:"partials/rooms.html",controller:"MainController"}).otherwise({redirectTo:"/login"})}]);
-RuChat.factory("socket",["$rootScope",function(n){var t=io.connect("http://localhost:8080");return{on:function(o,c){t.on(o,function(){var o=arguments;n.$apply(function(){c.apply(t,o)})})},emit:function(o,c,a){t.emit(o,c,function(){var o=arguments;n.$apply(function(){a&&a.apply(t,o)})})}}}]);
-RuChat.controller("loginController",["$scope","$location","$rootScope","$routeParams","socket",function(e,o,n,r,a){e.errorMessage="",e.nickname="",e.login=function(){if(""===e.nickname)e.errorMessage="Please choose a username before continuing!";else{var n=e.nickname;a.emit("adduser",n,function(n){n?o.path("/rooms/"+e.nickname):e.errorMessage="This username is already taken!"})}}}]);
-RuChat.controller("MainController",["$scope","$location","$rootScope","$routeParams","socket",function(o,e,n,s,r){o.currentUser=s.user,o.allUsers=[],o.curUserChannels={},o.rooms=[],o.data={roomName:"",msg:""},r.emit("getUserChannels"),r.on("getCurUserChannels",function(e){o.curUserChannels=e}),r.emit("rooms"),r.on("roomlist",function(e){var n=0;for(var s in e)e.hasOwnProperty(s)&&e[s].isPrivate===!1&&(o.rooms[n]=e[s].name,n++)}),r.emit("users"),r.on("userlist",function(e){for(var n=0;n<e.length;++n)o.allUsers[n]=e[n]}),r.emit("joinroom",{room:"lobby",priv:!1},function(e,n){e?o.sendJoinMsg("lobby"):console.log(n)}),o.createRoom=function(e){if(console.log(o.curUserChannels),void 0===o.curUserChannels[e]){var n={room:e,priv:!1};r.emit("joinroom",n,function(n,s){n?(r.emit("rooms"),r.emit("users"),r.emit("getUserChannels"),o.sendJoinMsg(e),o.roomName=""):o.errorMessage=s})}},o.sendJoinMsg=function(o){var e={roomName:o,msg:"Joined Room"};r.emit("sendmsg",e)},o.sendLeaveMsg=function(o){var e={roomName:o,msg:"Left Room"};r.emit("sendmsg",e)},o.sendInOutMsg=function(o){var e={roomName:o.roomName,msg:o.message};r.emit("sendmsg",e)}}]);
-RuChat.controller("roomController",["$scope","$location","$rootScope","$routeParams","socket",function(e,n,o,s,r){r.on("updateusers",function(){r.emit("users"),r.emit("rooms"),r.emit("getUserChannels")}),e.leaveRoom=function(n){1===Object.keys(e.curUserChannels).length?console.log("You must be in at least one room!"):(e.sendLeaveMsg(n),r.emit("partroom",n),r.emit("getUserChannels"))},e.sendMsg=function(n){e.data.msg=e.data.msg,e.data.roomName=n,r.emit("sendmsg",e.data),e.data.msg=""},r.on("updatechat",function(n,o){void 0!==e.curUserChannels[n]&&(e.curUserChannels[n].messageHistory=o)}),e.isOp=function(n,o){for(var s=Object.keys(e.curUserChannels[n].ops),r=0;r<s.length;++r)if(o===s[r])return!0},e.op=function(n,o){var s={room:n,user:o};r.emit("op",s);var t={roomName:n,message:"The user "+o+" has been opped"};e.sendInOutMsg(t)},e.deop=function(n,o){var s={room:n,user:o};r.emit("deop",s);var t={roomName:n,message:"The user "+o+" has been deopped"};e.sendInOutMsg(t)},e.kick=function(n,o){var s={room:n,user:o};r.emit("kick",s);var t={roomName:n,message:"The user "+o+" has been kicked out"};e.sendInOutMsg(t)},e.ban=function(n,o){var s={room:n,user:o};r.emit("ban",s);var t={roomName:n,message:"The user "+o+" has been banned"};e.sendInOutMsg(t)},r.on("banned",function(n,o){void 0!==e.curUserChannels[n]&&(e.curUserChannels[n].banned=o)}),e.unBan=function(n,o){var s={room:n,user:o};r.emit("unban",s);var t={roomName:n,message:"The user "+o+" has been unbanned"};e.sendInOutMsg(t)},e.setTopic=function(e,n){var o={room:e,topic:n};r.emit("settopic",o)},r.on("updatetopic",function(e,n,o){void 0!==o&&r.emit("getUserChannels")}),e.sendPrivateMsg=function(n){n!==e.currentUser&&r.emit("joinroom",{room:n+" + "+e.currentUser,priv:!0},function(o,s){if(o){var t={nick:n,room:n+" + "+e.currentUser};r.emit("privatemsg",t,function(o){o?(r.emit("rooms"),r.emit("users"),r.emit("getUserChannels"),e.sendJoinMsg(n+" + "+e.currentUser)):console.log("privatemsg error")})}else console.log(s)})},r.on("recv_privatemsg",function(n,o){r.emit("joinroom",{room:o,priv:!0},function(n,s){n?(r.emit("rooms"),r.emit("users"),r.emit("getUserChannels"),e.sendJoinMsg(o)):console.log(s)})})}]);
-RuChat.filter("capitalize",function(){return function(t){return t?t.replace(/([^\W_]+[^\s-]*) */g,function(t){return t.charAt(0).toUpperCase()+t.substr(1).toLowerCase()}):""}});
+var RuChat = angular.module('RuChat', ['ngRoute', 'luegg.directives', 'ui.bootstrap']);
+
+RuChat.config(
+    function($routeProvider) {
+        $routeProvider
+            .when('/login', {
+                templateUrl: 'partials/login.html',
+                controller: 'loginController'
+            })
+            .when('/rooms/:user', {
+                templateUrl: 'partials/rooms.html',
+                controller: 'MainController'
+            })
+            .otherwise({
+                redirectTo: '/login'
+            });
+    }
+);
+RuChat.factory('socket',['$rootScope', function($rootScope) { 
+    var socket = io.connect('http://localhost:8080');
+    return {
+        on: function (eventName, callback) {
+            socket.on(eventName, function () {
+                var args = arguments;
+                $rootScope.$apply(function () {
+                    callback.apply(socket, args);
+                });
+            });
+        },
+        emit: function (eventName, data, callback) {
+            socket.emit(eventName, data, function () {
+                var args = arguments;
+                $rootScope.$apply(function () {
+                    if (callback) {
+                        callback.apply(socket, args);
+                    }
+                });
+            });
+        }
+    };
+}]);
+RuChat.controller('loginController', ['$scope', '$location', '$rootScope', '$routeParams', 'socket', function($scope, $location, $rootScope, $routeParams, socket) {
+
+    $scope.errorMessage = '';
+    $scope.nickname = '';
+
+    $scope.login = function() {
+        if ($scope.nickname === '') {
+            $scope.errorMessage = 'Please choose a username before continuing!';
+        } else {
+            var nick = $scope.nickname;
+            socket.emit('adduser', nick, function(available) {
+                if (available) {
+                    $rootScope.username = nick;
+                    $location.path('/rooms/' + $scope.nickname);
+                } else {
+                    $scope.errorMessage = 'This username is already taken!';
+                }
+            });
+        }
+    };
+}]);
+RuChat.controller('MainController', ['$scope', '$location', '$rootScope', '$routeParams', 'socket',
+    function($scope, $location, $rootScope, $routeParams, socket) {
+
+        if (!$rootScope.username) {
+            $location.path('/login');
+            $rootScope.isLobby = false;
+        } else {
+            $rootScope.isLobby = true;
+            $scope.currentUser = $routeParams.user;
+            $scope.allUsers = [];
+            $scope.curUserChannels = {};
+            $scope.rooms = [];
+
+            $scope.data = {
+                roomName: "",
+                msg: ""
+            };
+
+            // Update the current user channels.
+            socket.emit('getUserChannels');
+
+            // Get all channels that current user is in.
+            socket.on('getCurUserChannels', function(channels) {
+                $scope.curUserChannels = channels;
+            });
+
+            // Get the list of all rooms
+            socket.emit('rooms');
+
+            // respond to emitted event from server by rooms event
+            // Only add the room to global room list if it is not private.
+            // This way private rooms won't show up for other users.
+            socket.on('roomlist', function(list) {
+                var i = 0;
+                for (var room in list) {
+                    if (!list.hasOwnProperty(room)) {
+                        continue;
+                    }
+                    if (list[room].isPrivate === false) {
+                        $scope.rooms[i] = list[room].name;
+                        i++;
+                    }
+                }
+            });
+
+            // Get the list of all connected users
+            socket.emit('users');
+
+            // Just copies all elements from userlist to our scope.
+            socket.on('userlist', function(userlist) {
+                for (var i = 0; i < userlist.length; ++i) {
+                    $scope.allUsers[i] = userlist[i];
+                }
+            });
+
+            // Forces every user to join the lobby when they connect.
+            socket.emit('joinroom', {
+                room: 'lobby',
+                priv: false
+            }, function(success, reason) {
+                if (!success) {
+                    console.log(reason);
+                } else {
+                    $scope.sendJoinMsg('lobby');
+                }
+            });
+
+            // When the user clicks on an available room
+            // or creates a new room.
+            $scope.createRoom = function(roomName) {
+                // join the room only if he isnt already in it
+                console.log($scope.curUserChannels);
+                if ($scope.curUserChannels[roomName] === undefined) {
+                    var joinObj = {
+                        room: roomName,
+                        priv: false
+                    };
+                    socket.emit('joinroom', joinObj, function(success, reason) {
+                        if (!success) {
+                            $scope.errorMessage = reason;
+                        } else {
+                            socket.emit('rooms');
+                            socket.emit('users');
+                            socket.emit('getUserChannels');
+                            $scope.sendJoinMsg(roomName);
+                            $scope.roomName = "";
+                        }
+                    });
+                }
+            };
+
+            $scope.sendJoinMsg = function(roomName) {
+                var data = {
+                    roomName: roomName,
+                    msg: "Joined Room"
+                };
+                socket.emit('sendmsg', data);
+            };
+
+            $scope.sendLeaveMsg = function(roomName) {
+                var data = {
+                    roomName: roomName,
+                    msg: "Left Room"
+                };
+                socket.emit('sendmsg', data);
+            };
+
+            $scope.sendInOutMsg = function(dataMessage) {
+                var data = {
+                    roomName: dataMessage.roomName,
+                    msg: dataMessage.message
+                };
+                socket.emit('sendmsg', data);
+            };
+        }
+    }
+]);
+RuChat.controller('roomController', ['$scope', '$location', '$rootScope', '$routeParams', 'socket',
+    function($scope, $location, $rootScope, $routeParams, socket) {
+
+        if (!$rootScope.isLobby) {
+            return;
+        } else {
+
+            // update the users list
+            socket.on('updateusers', function(room, users, ops) {
+                socket.emit('users');
+                socket.emit('rooms');
+                socket.emit('getUserChannels');
+            });
+
+            $scope.leaveRoom = function(channel) {
+                if (Object.keys($scope.curUserChannels).length === 1) {
+                    console.log("You must be in at least one room!");
+                } else {
+                    $scope.sendLeaveMsg(channel);
+                    socket.emit('partroom', channel);
+                    socket.emit('getUserChannels');
+                }
+            };
+
+            $scope.sendMsg = function(channel) {
+
+                $scope.data.msg = $scope.data.msg;
+                $scope.data.roomName = channel;
+
+                socket.emit('sendmsg', $scope.data);
+                $scope.data.msg = "";
+            };
+
+            // Fetch the chat history for the current room.
+            socket.on('updatechat', function(roomName, history) {
+                if ($scope.curUserChannels[roomName] !== undefined) {
+                    $scope.curUserChannels[roomName].messageHistory = history;
+                }
+            });
+
+            $scope.isOp = function(channel, name) {
+                var roomOps = Object.keys($scope.curUserChannels[channel].ops);
+
+                for (var i = 0; i < roomOps.length; ++i) {
+                    if (name === roomOps[i]) {
+                        return true;
+                    }
+                }
+            };
+
+            $scope.op = function(roomName, user) {
+                var data = {
+                    room: roomName,
+                    user: user
+                };
+                socket.emit('op', data);
+                var dataMessage = {
+                    roomName: roomName,
+                    message: "The user " + user + " has been opped"
+                };
+                $scope.sendInOutMsg(dataMessage);
+            };
+
+            $scope.deop = function(roomName, user) {
+                var data = {
+                    room: roomName,
+                    user: user
+                };
+                socket.emit('deop', data);
+                var dataMessage = {
+                    roomName: roomName,
+                    message: "The user " + user + " has been deopped"
+                };
+                $scope.sendInOutMsg(dataMessage);
+            };
+
+            $scope.kick = function(roomName, user) {
+                var data = {
+                    room: roomName,
+                    user: user
+                };
+                socket.emit('kick', data);
+                var dataMessage = {
+                    roomName: roomName,
+                    message: "The user " + user + " has been kicked out"
+                };
+                $scope.sendInOutMsg(dataMessage);
+            };
+
+            $scope.ban = function(roomName, user) {
+                var data = {
+                    room: roomName,
+                    user: user
+                };
+                socket.emit('ban', data);
+                var dataMessage = {
+                    roomName: roomName,
+                    message: "The user " + user + " has been banned"
+                };
+                $scope.sendInOutMsg(dataMessage);
+            };
+
+            // When ban event is called, add the users to banned list.
+            socket.on('banned', function(room, users, username) {
+                if ($scope.curUserChannels[room] !== undefined) {
+                    $scope.curUserChannels[room].banned = users;
+                }
+            });
+
+            $scope.unBan = function(roomName, user) {
+                var data = {
+                    room: roomName,
+                    user: user
+                };
+                socket.emit('unban', data);
+                var dataMessage = {
+                    roomName: roomName,
+                    message: "The user " + user + " has been unbanned"
+                };
+                $scope.sendInOutMsg(dataMessage);
+            };
+
+            $scope.setTopic = function(roomName, roomTopic) {
+                var data = {
+                    room: roomName,
+                    topic: roomTopic
+                };
+                socket.emit('settopic', data);
+            };
+
+            socket.on('updatetopic', function(room, topic, username) {
+                if (username !== undefined) {
+                    socket.emit('getUserChannels');
+                }
+            });
+
+            // Opens up a new tab with the current user and the recipient, tab will not be visible to other users.
+            $scope.sendPrivateMsg = function(name) {
+
+                if (name === $scope.currentUser) {
+                    return;
+                }
+                socket.emit('joinroom', {
+                    room: name + ' + ' + $scope.currentUser,
+                    priv: true
+                }, function(success, reason) {
+                    if (!success) {
+                        console.log(reason);
+                    } else {
+                        var msgObj = {
+                            nick: name,
+                            room: name + ' + ' + $scope.currentUser
+                        };
+                        socket.emit('privatemsg', msgObj, function(success) {
+                            if (!success) {
+                                console.log('privatemsg error');
+                            } else {
+                                socket.emit('rooms');
+                                socket.emit('users');
+                                socket.emit('getUserChannels');
+                                $scope.sendJoinMsg(name + ' + ' + $scope.currentUser);
+                            }
+                        });
+                    }
+                });
+            };
+
+            socket.on('recv_privatemsg', function(fromName, roomName) {
+                socket.emit('joinroom', {
+                    room: roomName,
+                    priv: true
+                }, function(success, reason) {
+                    if (!success) {
+                        console.log(reason);
+                    } else {
+                        socket.emit('rooms');
+                        socket.emit('users');
+                        socket.emit('getUserChannels');
+                        $scope.sendJoinMsg(roomName);
+                    }
+                });
+            });
+        }
+    }
+]);
+// This filter capitalizes the first letter of each word in a sentence.
+RuChat.filter('capitalize', function() {
+    return function(input, all) {
+        return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }) : '';
+    };
+});

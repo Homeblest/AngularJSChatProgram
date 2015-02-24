@@ -31,8 +31,8 @@ gulp.task('js', function() {
         }))
         .pipe(jshint.reporter(stylish))
         .pipe(jshint.reporter('fail'))
-        .pipe(ngAnnotate())
-        .pipe(uglify())
+        //.pipe(ngAnnotate())
+        //.pipe(uglify())
         .pipe(concat('app.js'))
         .pipe(gulp.dest('dist/js'))
 });

@@ -1,104 +1,116 @@
-RuChat.controller('MainController',['$scope', '$location', '$rootScope', '$routeParams', 'socket', function($scope, $location, $rootScope, $routeParams, socket) {
+RuChat.controller('MainController', ['$scope', '$location', '$rootScope', '$routeParams', 'socket',
+    function($scope, $location, $rootScope, $routeParams, socket) {
 
-    $scope.currentUser = $routeParams.user;
-    $scope.allUsers = [];
-    $scope.curUserChannels = {};
-    $scope.rooms = [];
+        if (!$rootScope.username) {
+            $location.path('/login');
+            $rootScope.isLobby = false;
+        } else {
+            $rootScope.isLobby = true;
+            $scope.currentUser = $routeParams.user;
+            $scope.allUsers = [];
+            $scope.curUserChannels = {};
+            $scope.rooms = [];
 
-    $scope.data = {
-        roomName: "",
-        msg: ""
-    };
-
-    // Update the current user channels.
-    socket.emit('getUserChannels');
-
-    // Get all channels that current user is in.
-    socket.on('getCurUserChannels', function(channels) {
-        $scope.curUserChannels = channels;
-    });
-
-    // Get the list of all rooms
-    socket.emit('rooms');
-
-    // respond to emitted event from server by rooms event
-    socket.on('roomlist', function(list) {
-        var i = 0;
-        for(var room in list){
-            if(!list.hasOwnProperty(room)){
-                continue;
-            }
-            if(list[room].isPrivate === false){
-                $scope.rooms[i] = list[room].name;
-                i++;
-            }
-        }
-    });
-
-    // Get the list of all connected users
-    socket.emit('users');
-
-    // Just copies all elements from userlist to our scope.
-    socket.on('userlist', function(userlist) {
-        for (var i = 0; i < userlist.length; ++i) {
-            $scope.allUsers[i] = userlist[i];
-        }
-    });
-
-    // Forces every user to join the lobby when they connect.
-    socket.emit('joinroom', {room: 'lobby', priv: false}, function(success, reason){
-        if(!success){
-            console.log(reason);
-        }else {
-            $scope.sendJoinMsg('lobby');
-        }
-    });
-
-    // When the user clicks on an available room
-    // or creates a new room.
-    $scope.createRoom = function(roomName) {
-        // join the room only if he isnt already in it
-        console.log($scope.curUserChannels);
-        if ($scope.curUserChannels[roomName] === undefined) {
-            var joinObj = {
-                room: roomName,
-                priv: false
+            $scope.data = {
+                roomName: "",
+                msg: ""
             };
-            socket.emit('joinroom', joinObj, function(success, reason) {
-                if (!success) {
-                    $scope.errorMessage = reason;
-                } else {
-                    socket.emit('rooms');
-                    socket.emit('users');
-                    socket.emit('getUserChannels');
-                    $scope.sendJoinMsg(roomName);
-                    $scope.roomName = "";
+
+            // Update the current user channels.
+            socket.emit('getUserChannels');
+
+            // Get all channels that current user is in.
+            socket.on('getCurUserChannels', function(channels) {
+                $scope.curUserChannels = channels;
+            });
+
+            // Get the list of all rooms
+            socket.emit('rooms');
+
+            // respond to emitted event from server by rooms event
+            // Only add the room to global room list if it is not private.
+            // This way private rooms won't show up for other users.
+            socket.on('roomlist', function(list) {
+                var i = 0;
+                for (var room in list) {
+                    if (!list.hasOwnProperty(room)) {
+                        continue;
+                    }
+                    if (list[room].isPrivate === false) {
+                        $scope.rooms[i] = list[room].name;
+                        i++;
+                    }
                 }
             });
+
+            // Get the list of all connected users
+            socket.emit('users');
+
+            // Just copies all elements from userlist to our scope.
+            socket.on('userlist', function(userlist) {
+                for (var i = 0; i < userlist.length; ++i) {
+                    $scope.allUsers[i] = userlist[i];
+                }
+            });
+
+            // Forces every user to join the lobby when they connect.
+            socket.emit('joinroom', {
+                room: 'lobby',
+                priv: false
+            }, function(success, reason) {
+                if (!success) {
+                    console.log(reason);
+                } else {
+                    $scope.sendJoinMsg('lobby');
+                }
+            });
+
+            // When the user clicks on an available room
+            // or creates a new room.
+            $scope.createRoom = function(roomName) {
+                // join the room only if he isnt already in it
+                if ($scope.curUserChannels[roomName] === undefined) {
+                    var joinObj = {
+                        room: roomName,
+                        priv: false
+                    };
+                    socket.emit('joinroom', joinObj, function(success, reason) {
+                        if (!success) {
+                            $scope.errorMessage = reason;
+                        } else {
+                            socket.emit('rooms');
+                            socket.emit('users');
+                            socket.emit('getUserChannels');
+                            $scope.sendJoinMsg(roomName);
+                            $scope.roomName = "";
+                        }
+                    });
+                }
+            };
+
+            $scope.sendJoinMsg = function(roomName) {
+                var data = {
+                    roomName: roomName,
+                    msg: "Joined Room"
+                };
+                socket.emit('sendmsg', data);
+            };
+
+            $scope.sendLeaveMsg = function(roomName) {
+                var data = {
+                    roomName: roomName,
+                    msg: "Left Room"
+                };
+                socket.emit('sendmsg', data);
+            };
+
+            $scope.sendInOutMsg = function(dataMessage) {
+                var data = {
+                    roomName: dataMessage.roomName,
+                    msg: dataMessage.message
+                };
+                socket.emit('sendmsg', data);
+            };
         }
-    };
-
-    $scope.sendJoinMsg = function(roomName) {
-        var data = {
-            roomName: roomName,
-            msg: "Joined Room"
-        };
-        socket.emit('sendmsg', data);
-    };
-
-    $scope.sendLeaveMsg = function(roomName) {
-        var data = {
-            roomName: roomName,
-            msg: "Left Room"
-        };
-        socket.emit('sendmsg', data);
-    };
-
-    $scope.sendInOutMsg = function(dataMessage) {
-        var data = {
-            roomName: dataMessage.roomName,
-            msg: dataMessage.message
-        };
-        socket.emit('sendmsg', data);
-    };
-}]);
+    }
+]);

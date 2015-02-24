@@ -1,4 +1,4 @@
-RuChat.controller('loginController',['$scope', '$location', '$rootScope', '$routeParams', 'socket', function($scope, $location, $rootScope, $routeParams, socket) {
+RuChat.controller('loginController', ['$scope', '$location', '$rootScope', '$routeParams', 'socket', function($scope, $location, $rootScope, $routeParams, socket) {
 
     $scope.errorMessage = '';
     $scope.nickname = '';
@@ -10,6 +10,7 @@ RuChat.controller('loginController',['$scope', '$location', '$rootScope', '$rout
             var nick = $scope.nickname;
             socket.emit('adduser', nick, function(available) {
                 if (available) {
+                    $rootScope.username = nick;
                     $location.path('/rooms/' + $scope.nickname);
                 } else {
                     $scope.errorMessage = 'This username is already taken!';
