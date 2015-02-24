@@ -1,4 +1,4 @@
-RuChat.controller('MainController', function($scope, $location, $rootScope, $routeParams, socket) {
+RuChat.controller('MainController',['$scope', '$location', '$rootScope', '$routeParams', 'socket', function($scope, $location, $rootScope, $routeParams, socket) {
 
     $scope.currentUser = $routeParams.user;
     $scope.allUsers = [];
@@ -101,4 +101,4 @@ RuChat.controller('MainController', function($scope, $location, $rootScope, $rou
         };
         socket.emit('sendmsg', data);
     };
-});
+}]);

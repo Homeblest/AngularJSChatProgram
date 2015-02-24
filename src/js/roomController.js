@@ -1,4 +1,4 @@
-RuChat.controller('roomController', function($scope, $location, $rootScope, $routeParams, socket) {
+RuChat.controller('roomController',['$scope', '$location', '$rootScope', '$routeParams', 'socket', function($scope, $location, $rootScope, $routeParams, socket) {
 
     // update the users list
     socket.on('updateusers', function(room, users, ops) {
@@ -175,4 +175,4 @@ RuChat.controller('roomController', function($scope, $location, $rootScope, $rou
             }
         });
     });
-});
+}]);

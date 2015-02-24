@@ -1,4 +1,4 @@
-RuChat.controller('loginController', function($scope, $location, $rootScope, $routeParams, socket) {
+RuChat.controller('loginController',['$scope', '$location', '$rootScope', '$routeParams', 'socket', function($scope, $location, $rootScope, $routeParams, socket) {
 
     $scope.errorMessage = '';
     $scope.nickname = '';
@@ -17,4 +17,4 @@ RuChat.controller('loginController', function($scope, $location, $rootScope, $ro
             });
         }
     };
-});
+}]);

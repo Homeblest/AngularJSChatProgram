@@ -1,7 +1,8 @@
 var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     jshint = require('gulp-jshint'),
-    concat = require('gulp-concat');
+    concat = require('gulp-concat'),
+    ngAnnotate = require('gulp-ng-annotate');
 
 var stylish = require('jshint-stylish');
 
@@ -30,7 +31,8 @@ gulp.task('js', function() {
         }))
         .pipe(jshint.reporter(stylish))
         .pipe(jshint.reporter('fail'))
-        //.pipe(uglify())
+        .pipe(ngAnnotate())
+        .pipe(uglify())
         .pipe(concat('app.js'))
         .pipe(gulp.dest('dist/js'))
 });
