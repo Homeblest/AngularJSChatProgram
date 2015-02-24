@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "authors": [
     "Hjalti Leifsson <Hjaltileifsson@gmail.com>",
-    "Árni Benedikt Árnason <arnibarnason@gmail.com>",
+    "Árni Benedikt Árnason <arnibarnason@gmail.com>"
   ],
   "dependencies": {
     "angular-scroll-glue": "~2.0.3"
