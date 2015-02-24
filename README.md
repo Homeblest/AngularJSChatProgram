@@ -26,7 +26,7 @@ $ gulp js
 ```sh
 $ python -m SimpleHTTPServer 8000
 ```
-* This runs a simple server that out application can run on
+* This runs a simple server that our application can run on
 
 ##Third Tab:
 ```sh
