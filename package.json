@@ -4,6 +4,12 @@
   "version": "0.0.1",
   "dependencies": {
     "express": "3.1.0",
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-jshint": "^1.9.2",
+    "gulp-ng-annotate": "^0.5.2",
+    "gulp-uglify": "^1.1.0",
+    "jshint-stylish": "^1.0.0",
     "socket.io": "0.9.13"
   },
   "devDependencies": {
